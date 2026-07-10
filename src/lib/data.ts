@@ -19,33 +19,45 @@ export const NAV_LINKS = [
 
 export const SERVICES = [
   {
-    title: "Aplicaciones Móviles (iOS & Android)",
-    description: "Desarrollamos una sola aplicación móvil que funciona tanto en iPhones como en teléfonos Android. Esto te ahorra tiempo y dinero en desarrollo, permitiéndote llegar a todos tus clientes con el doble de rapidez.",
+    title: "Apps Móviles",
+    subtitle: "Desarrollo de aplicaciones que funcionan tanto en iPhone como en Android, optimizando tu costo de desarrollo.",
+    href: "#contact",
+    imageSrc: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200&auto=format&fit=crop",
+    tag: "iOS & Android",
+    actionText: "Cotizar Aplicación",
     features: [
-      "Funciona sin Internet (guarda datos localmente)",
-      "Envío de notificaciones (alertas a tus usuarios)",
-      "Ubicación en mapa (GPS en tiempo real)",
-      "Botón de pago directo y seguro"
+      "Funciona sin Internet (base local)",
+      "Notificaciones push (alertas directas)",
+      "Mapa y geolocalización GPS",
+      "Pagos seguros in-app"
     ]
   },
   {
-    title: "Sitios Web y Catálogos de Venta a Medida",
-    description: "Creamos sitios web y sistemas de venta rápidos y fáciles de usar, adaptados exactamente a tu negocio. Nada de plantillas lentas o sistemas difíciles: tú tienes el control absoluto de tus productos y precios.",
+    title: "Sitios Web & Venta",
+    subtitle: "Sitios web y sistemas de venta rápidos y autoadministrables adaptados a las necesidades reales de tu empresa.",
+    href: "#contact",
+    imageSrc: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop",
+    tag: "E-Commerce & Gestión",
+    actionText: "Cotizar Plataforma",
     features: [
-      "Panel para cambiar precios y stock al instante",
-      "Conexión con pasarelas de pago (Webpay, etc.)",
-      "Se adapta perfecto a pantallas de celulares",
-      "Base de datos segura para tus clientes"
+      "Panel para actualizar stock e imágenes",
+      "Pasarela de pago nacional (Webpay)",
+      "Diseño adaptable a celulares",
+      "Buscadores avanzados y filtros"
     ]
   },
   {
-    title: "Aceleración de Sitios Web Lentos",
-    description: "¿Tienes una página web que tarda siglos en cargar? Una web lenta hace que tus clientes se aburran y se vayan con la competencia. Optimizamos tu sitio actual para que abra al instante.",
+    title: "Aceleración Web",
+    subtitle: "Optimizamos tu página web lenta para mejorar la experiencia de usuario y evitar la pérdida de ventas.",
+    href: "#contact",
+    imageSrc: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
+    tag: "Rendimiento & SEO",
+    actionText: "Pedir Diagnóstico Gratis",
     features: [
-      "Carga inmediata en conexiones móviles",
-      "Mejor posicionamiento en Google (SEO)",
-      "Reducción de costos en hosting y servidores",
-      "Diagnóstico inicial de velocidad gratuito"
+      "Carga instantánea en conexiones 4G/5G",
+      "Mejora de puntaje en Google (Core Web Vitals)",
+      "Reducción de costos en servidores",
+      "SEO técnico para mejor posicionamiento"
     ]
   }
 ];

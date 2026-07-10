@@ -28,10 +28,10 @@ export default function HowWeWork() {
       <div className="mx-auto max-w-3xl px-6">
         <Reveal className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">
-            Nuestro Proceso
+            El Proceso
           </span>
           <h2 className="font-display font-semibold text-2xl sm:text-3xl tracking-tight text-ink">
-            Cómo trabajamos en 3 simples pasos
+            Cómo trabajo en 3 simples pasos
           </h2>
           <p className="mt-3 text-sm text-ink-soft leading-relaxed">
             Sin burocracia ni agencias intermediarias. Un proceso directo, transparente y enfocado en entregar valor rápido a tu negocio.

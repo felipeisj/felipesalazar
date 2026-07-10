@@ -43,3 +43,132 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Service Accordion Custom Styles */
+.active-panel-shadow {
+  outline: 1px solid rgba(70, 64, 222, 0.3) !important;
+  outline-offset: -1px !important;
+  box-shadow: 
+    0 15px 35px -10px rgba(0, 0, 0, 0.35), 
+    0 0 20px rgba(70, 64, 222, 0.15) !important;
+  z-index: 20 !important;
+}
+.accordion-panel-transition {
+  transition: all 700ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+.border-transition {
+  border-right: 1px solid rgba(228, 225, 216, 0.15) !important;
+  transition: border-color 700ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+.border-transparent-custom {
+  border-right-color: transparent !important;
+}
+.inactive-img {
+  filter: blur(1px) grayscale(100%) !important;
+  opacity: 0.12 !important;
+  transform: scale(1) !important;
+  transition: filter 500ms ease, opacity 500ms ease, transform 500ms ease !important;
+}
+.group:hover .inactive-img {
+  filter: blur(0px) grayscale(10%) !important;
+  opacity: 0.25 !important;
+  transform: scale(1.04) !important;
+}
+.inactive-text {
+  color: rgba(22, 22, 29, 0.35) !important;
+  transition: color 500ms ease, transform 500ms ease, text-shadow 500ms ease !important;
+}
+.group:hover .inactive-text {
+  color: #4640de !important;
+  transform: scale(1.05) translateY(-5px) !important;
+  text-shadow: 0 0 8px rgba(70, 64, 222, 0.2) !important;
+}
+@keyframes card-water-ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3.2);
+    opacity: 0;
+  }
+}
+.card-ripple-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  pointer-events: none;
+  z-index: 15;
+  overflow: visible;
+}
+.card-ripple-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(70, 64, 222, 0.3) !important;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px rgba(70, 64, 222, 0.2), inset 0 0 20px rgba(70, 64, 222, 0.2) !important;
+  animation: card-water-ripple 4s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+.card-ripple-wave-2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid rgba(70, 64, 222, 0.2) !important;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(70, 64, 222, 0.12), inset 0 0 15px rgba(70, 64, 222, 0.12) !important;
+  animation: card-water-ripple 4s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+  animation-delay: 1.3s;
+}
+.card-ripple-wave-3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(70, 64, 222, 0.08) !important;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(70, 64, 222, 0.06), inset 0 0 10px rgba(70, 64, 222, 0.06) !important;
+  animation: card-water-ripple 4s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+  animation-delay: 2.6s;
+}
+.active-content-transition {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+.active-content-visible {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.active-content-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.inactive-content-transition {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 700ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+.inactive-content-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.inactive-content-visible {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
