@@ -35,40 +35,42 @@ export default function Hero() {
   );
 
   return (
-    <section id="top" ref={rootRef} className="pt-40 pb-20 md:pt-48 md:pb-24">
-      <div className="mx-auto max-w-3xl px-6 flex flex-col items-center text-center">
-        <div data-hero-item className="flex flex-col items-center gap-3">
-          <span className="relative flex h-36 w-36 shrink-0 overflow-hidden rounded-full ring-2 ring-accent-soft">
+    <section id="top" ref={rootRef} className="relative pt-44 pb-24 md:pt-52 md:pb-32 overflow-hidden">
+      {/* Soft Ambient Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-accent/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+      <div className="mx-auto max-w-3xl px-6 flex flex-col items-center text-center relative z-10">
+        <div data-hero-item className="relative mb-6">
+          <span className="relative flex h-44 w-44 shrink-0 overflow-hidden rounded-full ring-4 ring-accent/10 border-2 border-line/60">
             <Image
               src="/avatar3.jpg"
               alt={PERSONAL.name}
               fill
-              sizes="144px"
+              sizes="176px"
               className="object-cover"
               priority
             />
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3.5 py-1.5 text-xs text-ink-soft">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Disponible para nuevos proyectos
-          </span>
+          {/* Pulsing Active/Online Indicator */}
+          <span className="absolute bottom-2.5 right-2.5 block h-5 w-5 rounded-full bg-emerald-500 ring-4 ring-white z-10" />
+          <span className="absolute bottom-2.5 right-2.5 block h-5 w-5 rounded-full bg-emerald-400 ring-4 ring-white animate-ping opacity-75 z-10" />
         </div>
 
         <h1
           data-hero-item
-          className="mt-8 font-display font-semibold text-3xl sm:text-4xl tracking-tight text-balance text-ink"
+          className="mt-6 font-display font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-tight text-balance text-ink leading-[1.1]"
         >
           Desarrollador de <span className="text-accent">Software a Medida</span> y Apps Móviles.
         </h1>
 
         <p
           data-hero-item
-          className="mt-4 max-w-xl mx-auto text-base md:text-lg text-ink-soft leading-relaxed"
+          className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-ink-soft leading-relaxed"
         >
           Hola, soy {PERSONAL.firstName}. Construyo páginas web y aplicaciones móviles nativas iOS/Android de alto rendimiento para potenciar tu negocio. Sin intermediarios, trato directo.
         </p>
 
-        <div data-hero-item className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+        <div data-hero-item className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
           <a
             href={PERSONAL.whatsapp}
             target="_blank"
