@@ -36,11 +36,11 @@ export default function Hero() {
 
   return (
     <section id="top" ref={rootRef} className="pt-40 pb-20 md:pt-48 md:pb-24">
-      <div className="mx-auto max-w-3xl px-6">
-        <div data-hero-item className="flex items-center gap-4">
+      <div className="mx-auto max-w-3xl px-6 flex flex-col items-center text-center">
+        <div data-hero-item className="flex flex-col items-center gap-3">
           <span className="relative flex h-36 w-36 shrink-0 overflow-hidden rounded-full ring-2 ring-accent-soft">
             <Image
-              src="/avatar2.jpg"
+              src="/avatar3.jpg"
               alt={PERSONAL.name}
               fill
               sizes="144px"
@@ -63,12 +63,12 @@ export default function Hero() {
 
         <p
           data-hero-item
-          className="mt-4 max-w-xl text-base md:text-lg text-ink-soft leading-relaxed"
+          className="mt-4 max-w-xl mx-auto text-base md:text-lg text-ink-soft leading-relaxed"
         >
           Hola, soy {PERSONAL.firstName}. Construyo páginas web y aplicaciones móviles nativas iOS/Android de alto rendimiento para potenciar tu negocio. Sin intermediarios, trato directo.
         </p>
 
-        <div data-hero-item className="mt-7 flex flex-wrap items-center gap-2.5">
+        <div data-hero-item className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
           <a
             href={PERSONAL.whatsapp}
             target="_blank"

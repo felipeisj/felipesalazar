@@ -45,19 +45,19 @@ export default function HowWeWork() {
           {/* Column 1: Video Player Card (5 cols) */}
           <div className="md:col-span-5 flex flex-col items-center">
             <Reveal className="w-full">
-              <div 
+              <div
                 onClick={() => setIsVideoOpen(true)}
                 className="group relative w-full aspect-[4/3] rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 bg-neutral-900 border border-line"
               >
                 {/* Video Thumbnail (Felipe at laptop) */}
                 <Image
-                  src="/avatar2.jpg"
+                  src="/avatar3.jpg"
                   alt="Felipe Salazar trabajando"
                   fill
                   className="object-cover opacity-85 transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 30vw"
                 />
-                
+
                 {/* Dark Vignette Overlay */}
                 <div className="absolute inset-0 bg-black/35 group-hover:bg-black/20 transition-colors duration-500 z-10" />
 
@@ -92,7 +92,7 @@ export default function HowWeWork() {
                     <span className="absolute -left-[35px] top-1 flex h-6 w-6 items-center justify-center rounded-full border border-line bg-white text-accent shadow-sm">
                       <Icon size={12} />
                     </span>
-                    
+
                     <div>
                       <h4 className="font-display font-bold text-sm text-ink mb-1.5 leading-snug">
                         {s.title}
@@ -111,11 +111,11 @@ export default function HowWeWork() {
 
       {/* Video Modal Backdrop */}
       {isVideoOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
           onClick={() => setIsVideoOpen(false)}
         >
-          <div 
+          <div
             className="relative w-full max-w-2xl bg-neutral-950 rounded-2xl overflow-hidden aspect-video shadow-2xl border border-white/10"
             onClick={(e) => e.stopPropagation()}
           >
