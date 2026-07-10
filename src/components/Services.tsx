@@ -19,7 +19,7 @@ export default function Services() {
     } else {
       message = "¡Hola Felipe! Me gustaría saber más sobre la Aceleración y Optimización de mi sitio web.";
     }
-    
+
     const baseUrl = PERSONAL.whatsapp || "https://wa.me/56949290943";
     return `${baseUrl}?text=${encodeURIComponent(message)}`;
   };
@@ -29,7 +29,6 @@ export default function Services() {
       {/* Desktop Grid (md and up) */}
       <div className="hidden md:block mx-auto max-w-5xl px-6">
         <Reveal className="flex items-center gap-2.5 mb-10">
-          <Cpu size={18} className="text-accent" />
           <h2 className="font-display font-semibold text-xl tracking-tight">
             Servicios y Soluciones
           </h2>
@@ -46,9 +45,8 @@ export default function Services() {
                 <div
                   key={service.title}
                   onMouseEnter={() => setActiveIndex(index)}
-                  className={`group relative h-full flex flex-col justify-between overflow-hidden cursor-pointer transition-all duration-[750ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                    isActive ? "flex-[2]" : "flex-[0.5]"
-                  }`}
+                  className={`group relative h-full flex flex-col justify-between overflow-hidden cursor-pointer transition-all duration-[750ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "flex-[2]" : "flex-[0.5]"
+                    }`}
                 >
                   {/* Accessible link (inactive parts scroll to contact, active button triggers whatsapp) */}
                   <a href="#contact" className="absolute inset-0 z-30" aria-label={service.title} />
@@ -60,9 +58,8 @@ export default function Services() {
                       alt={service.title}
                       fill
                       sizes="33vw"
-                      className={`object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                        isActive ? "scale-105" : "scale-100"
-                      }`}
+                      className={`object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "scale-105" : "scale-100"
+                        }`}
                     />
                     {/* Subtle vignette */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20 z-[1]" />
@@ -70,17 +67,15 @@ export default function Services() {
 
                   {/* Color Overlay (fades out on hover) */}
                   <div
-                    className={`absolute inset-0 z-[2] mix-blend-multiply transition-opacity duration-[750ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                      isActive ? "opacity-20" : "opacity-80"
-                    }`}
+                    className={`absolute inset-0 z-[2] mix-blend-multiply transition-opacity duration-[750ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "opacity-20" : "opacity-80"
+                      }`}
                     style={{ backgroundColor: service.color }}
                   />
 
                   {/* Resting State: Vertical Title & Arrow */}
                   <div
-                    className={`absolute inset-0 z-[3] flex flex-col items-center justify-between py-12 px-4 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                      isActive ? "opacity-0 translate-y-4 pointer-events-none" : "opacity-100 translate-y-0"
-                    }`}
+                    className={`absolute inset-0 z-[3] flex flex-col items-center justify-between py-12 px-4 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "opacity-0 translate-y-4 pointer-events-none" : "opacity-100 translate-y-0"
+                      }`}
                   >
                     <div className="h-6" />
                     <p
@@ -96,9 +91,8 @@ export default function Services() {
 
                   {/* Hover State: Glassmorphic/White Bottom Card */}
                   <div
-                    className={`absolute bottom-6 inset-x-6 z-[4] bg-white p-5 rounded-2xl shadow-xl border border-line/40 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                      isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-                    }`}
+                    className={`absolute bottom-6 inset-x-6 z-[4] bg-white p-5 rounded-2xl shadow-xl border border-line/40 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+                      }`}
                   >
                     <span className="inline-flex text-[8px] font-bold uppercase tracking-wider text-accent bg-accent-soft px-2.5 py-0.5 rounded-md mb-2.5 w-fit">
                       {service.tag}
