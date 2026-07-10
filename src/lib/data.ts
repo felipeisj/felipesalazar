@@ -141,7 +141,7 @@ export const PROJECTS: Project[] = [
     category: "Freelance · SaaS con IA",
     description:
       "Sistema que analiza licitaciones públicas con la API de Claude y estructura las variables clave para la toma de decisiones, sobre una arquitectura de microservicios con NestJS.",
-    stack: ["NestJS", "Supabase", "Claude API", "Railway"],
+    stack: ["Python", "Supabase", "Claude API", "Railway"],
     accent: "#2C27A8",
   },
   {
@@ -185,7 +185,7 @@ export const STACK = [
   "Next.js",
   "React Native",
   "Node.js",
-  "NestJS",
+  "Python",
   "AWS",
   "Supabase",
   "PostgreSQL",

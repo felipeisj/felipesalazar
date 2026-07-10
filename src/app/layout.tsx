@@ -11,7 +11,7 @@ const poppins = Poppins({
 const SITE_URL = "https://felipesalazar.dev";
 const SITE_TITLE = "Felipe Salazar | Full-Stack Developer & Tech Lead";
 const SITE_DESCRIPTION =
-  "Ingeniero Civil en Informatica y Tech Lead con 4+ anos de experiencia construyendo productos digitales de punta a punta: apps moviles publicadas en App Store y Play Store, plataformas SaaS con IA y APIs para fintech y ecommerce. React, React Native, Node.js, NestJS y AWS.";
+  "Ingeniero Civil en Informatica y Tech Lead con 4+ anos de experiencia construyendo productos digitales de punta a punta: apps moviles publicadas en App Store y Play Store, plataformas SaaS con IA y APIs para fintech y ecommerce. React, React Native, Node.js, Python y AWS.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     "Node.js developer",
     "desarrollador full stack chile",
     "AWS",
-    "NestJS",
+    "Python",
     "portfolio ingeniero de software",
   ],
   alternates: { canonical: "/" },

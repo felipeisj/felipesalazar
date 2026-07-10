@@ -20,8 +20,8 @@ export default function Home() {
         
         {/* Clientes Section */}
         <section id="clientes" className="py-16 md:py-20 border-t border-line bg-white overflow-hidden">
-          <div className="mx-auto max-w-3xl px-6 mb-10">
-            <Reveal className="text-center max-w-2xl mx-auto">
+          <div className="mx-auto max-w-5xl px-6">
+            <Reveal className="text-center max-w-2xl mx-auto mb-10">
               <span className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">
                 Quiénes confían en nosotros
               </span>
@@ -32,8 +32,6 @@ export default function Home() {
                 He colaborado con empresas y emprendedores locales en Chile, implementando soluciones que impulsan su operación diaria.
               </p>
             </Reveal>
-          </div>
-          <div className="w-full">
             <ClientPanel />
           </div>
         </section>
