@@ -15,7 +15,7 @@ export default function About() {
 
         <Reveal delay={0.05} className="mt-6 space-y-4 max-w-xl">
           <p className="text-sm md:text-base text-ink-soft leading-relaxed">
-            Soy Ingeniero Civil en Informática y llevo más de 4 años
+            Soy Ingeniero Civil en Informática de la Universidad Austral de Chile y llevo más de 4 años
             construyendo productos digitales de punta a punta, desde la
             arquitectura hasta el deploy en producción. Empecé en QA
             automatizando pruebas, y hoy lidero como Tech Lead el desarrollo

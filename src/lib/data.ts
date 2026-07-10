@@ -10,6 +10,7 @@ export const PERSONAL = {
 };
 
 export const NAV_LINKS = [
+  { label: "Inicio", href: "#top" },
   { label: "Servicios", href: "#services" },
   { label: "Clientes", href: "#clientes" },
   { label: "Proyectos", href: "#work" },
