@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #faf9f6;
+  --color-paper-alt: #f2f0ea;
+  --color-ink: #16161d;
+  --color-ink-soft: #4a4a56;
+  --color-ink-faint: #86858f;
+  --color-line: #e4e1d8;
+  --color-accent: #4640de;
+  --color-accent-soft: #ecebfd;
+  --color-accent-ink: #2c27a8;
+  --color-warm: #ff6b4a;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-alt: var(--color-paper-alt);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-line: var(--color-line);
+  --color-accent: var(--color-accent);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-ink: var(--color-accent-ink);
+  --color-warm: var(--color-warm);
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-poppins);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "id": "mpf-ingenieria",
+    "name": "MPF Ingeniería",
+    "category": "Construcción",
+    "description": "Centralización de reportes técnicos de obra, gestión de rendimientos e integración de control de combustible.",
+    "logoText": "MPF",
+    "logoColor": "from-blue-600 to-cyan-500",
+    "badgeBg": "bg-blue-50 text-blue-700 border-blue-200/60",
+    "badgeText": "Ingeniería y Obras",
+    "projectHighlights": [
+      "Control de combustible",
+      "Gestión MOP",
+      "Reportes de terreno"
+    ],
+    "logoImage": "saer-ti/clients/ktnmdxo9xr9ngduuq1sf"
+  },
+  {
+    "id": "nova-horizonte",
+    "name": "Nova Horizonte",
+    "category": "Construcción",
+    "description": "Digitalización del control diario de maquinaria y despacho de materiales para obras viales.",
+    "logoText": "NH",
+    "logoColor": "from-amber-600 to-orange-500",
+    "badgeBg": "bg-amber-50 text-amber-700 border-amber-200/60",
+    "badgeText": "Edificación y Vías",
+    "projectHighlights": [
+      "Control diario digital",
+      "Despacho de materiales",
+      "Uso de maquinaria"
+    ]
+  },
+  {
+    "id": "metal-austral",
+    "name": "Metal-Austral",
+    "category": "Construcción",
+    "description": "Plataforma para control de proyectos de montaje y fabricación de estructuras metálicas.",
+    "logoText": "MA",
+    "logoColor": "from-slate-700 to-slate-500",
+    "badgeBg": "bg-slate-100 text-slate-700 border-slate-200/60",
+    "badgeText": "Estructuras Metálicas",
+    "projectHighlights": [
+      "Trazabilidad de piezas",
+      "Avance de montaje",
+      "Control de calidad"
+    ],
+    "logoImage": "saer-ti/clients/aisqadscabhk1h5uwyq0"
+  },
+  {
+    "id": "lumarty",
+    "name": "Lumarty",
+    "category": "Desarrollo a Medida",
+    "description": "Plataforma e-commerce B2B e integraciones avanzadas de inventario para iluminación industrial.",
+    "logoText": "LM",
+    "logoColor": "from-rose-600 to-pink-500",
+    "badgeBg": "bg-rose-50 text-rose-700 border-rose-200/60",
+    "badgeText": "E-commerce & Stock",
+    "projectHighlights": [
+      "Sincronización de stock",
+      "Facturación automática",
+      "Panel de control B2B"
+    ],
+    "logoImage": "saer-ti/clients/qwqu1baucgtu8jqubrni"
+  },
+  {
+    "id": "vilugron-propiedades",
+    "name": "Vilugron Propiedades",
+    "category": "Desarrollo a Medida",
+    "description": "Portal inmobiliario personalizado integrado con buscador avanzado georreferenciado y firmas digitales.",
+    "logoText": "VP",
+    "logoColor": "from-emerald-600 to-teal-500",
+    "badgeBg": "bg-emerald-50 text-emerald-700 border-emerald-200/60",
+    "badgeText": "Gestión Inmobiliaria",
+    "projectHighlights": [
+      "Firma digital integrada",
+      "Buscador de mapa",
+      "Captación de leads"
+    ],
+    "logoImage": "saer-ti/clients/te9fyoa8nqhnuecpd2yb"
+  },
+  {
+    "id": "pololitos",
+    "name": "Pololitos",
+    "category": "Apps Móviles",
+    "description": "Aplicación móvil nativa para conectar técnicos independientes con servicios de hogar en tiempo real.",
+    "logoText": "PL",
+    "logoColor": "from-violet-600 to-indigo-500",
+    "badgeBg": "bg-violet-50 text-violet-700 border-violet-200/60",
+    "badgeText": "App de Servicios",
+    "projectHighlights": [
+      "Geolocalización en tiempo real",
+      "Pagos integrados",
+      "Chat directo in-app"
+    ],
+    "logoImage": "saer-ti/clients/inpmtfj73tnmfdkwpomj"
+  }
+]
