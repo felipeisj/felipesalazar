@@ -9,7 +9,7 @@ export default function Services() {
   return (
     <section id="services" className="py-16 md:py-20 border-t border-line bg-paper">
       {/* Desktop Grid (md and up) */}
-      <div className="hidden md:block mx-auto max-w-3xl px-6">
+      <div className="hidden md:block mx-auto max-w-5xl px-6">
         <Reveal className="flex items-center gap-2.5 mb-10">
           <Cpu size={18} className="text-accent" />
           <h2 className="font-display font-semibold text-xl tracking-tight">
@@ -17,71 +17,71 @@ export default function Services() {
           </h2>
         </Reveal>
 
-        <Reveal group className="grid gap-6 grid-cols-3">
-          {SERVICES.map((service) => (
-            <div
-              key={service.title}
-              className="group relative h-[440px] rounded-3xl overflow-hidden cursor-pointer bg-neutral-900 shadow-md hover:shadow-xl hover:-translate-y-3 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
-            >
-              {/* Accessible link */}
-              <a href={service.href} className="absolute inset-0 z-30" aria-label={service.title} />
-
-              {/* Background Image */}
-              <div className="absolute inset-0 z-0">
-                <Image
-                  src={service.imageSrc}
-                  alt={service.title}
-                  fill
-                  sizes="33vw"
-                  className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
-                />
-                {/* Vignette bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/35 z-[1]" />
-              </div>
-
-              {/* Color Overlay */}
+        <Reveal className="overflow-hidden rounded-[32px] border border-line bg-[#0F172A] relative shadow-lg">
+          <div className="flex h-[500px] w-full relative divide-x divide-white/10">
+            {SERVICES.map((service, index) => (
               <div
-                className="absolute inset-0 z-[2] mix-blend-multiply opacity-75 transition-transform duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:-translate-y-full"
-                style={{ backgroundColor: service.color }}
-              />
+                key={service.title}
+                className="group relative h-full flex-[1] flex flex-col justify-between overflow-hidden cursor-pointer transition-all duration-[750ms] ease-[cubic-bezier(0.25,1,0.5,1)] hover:flex-[2]"
+              >
+                {/* Accessible link */}
+                <a href={service.href} className="absolute inset-0 z-30" aria-label={service.title} />
 
-              {/* Resting State: Vertical Title */}
-              <div className="absolute inset-0 z-[3] flex flex-col items-end justify-end pb-12 pr-6 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-0 group-hover:translate-x-4">
-                <p
-                  className="[writing-mode:vertical-rl] -rotate-180 font-display font-black uppercase tracking-[0.06em] text-[2.2rem] leading-none"
-                  style={{
-                    WebkitTextFillColor: "transparent",
-                    WebkitTextStrokeWidth: "1px",
-                    WebkitTextStrokeColor: "white",
-                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.6))",
-                  }}
-                >
-                  {service.title}
-                </p>
-                <ArrowRight size={22} className="mt-4 text-white/80" />
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                  <Image
+                    src={service.imageSrc}
+                    alt={service.title}
+                    fill
+                    sizes="33vw"
+                    className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
+                  />
+                  {/* Subtle vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20 z-[1]" />
+                </div>
+
+                {/* Color Overlay (fades out on hover) */}
+                <div
+                  className="absolute inset-0 z-[2] mix-blend-multiply opacity-80 transition-opacity duration-[750ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-20"
+                  style={{ backgroundColor: service.color }}
+                />
+
+                {/* Resting State: Vertical Title & Arrow */}
+                <div className="absolute inset-0 z-[3] flex flex-col items-center justify-between py-12 px-4 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-0 group-hover:translate-y-4">
+                  <div className="h-6" />
+                  <p
+                    className="[writing-mode:vertical-rl] -rotate-180 font-display font-black uppercase tracking-[0.25em] text-lg leading-none text-white/90 select-none"
+                    style={{
+                      filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
+                    }}
+                  >
+                    {service.title}
+                  </p>
+                  <ArrowRight size={20} className="text-white/60" />
+                </div>
+
+                {/* Hover State: Glassmorphic/White Bottom Card */}
+                <div className="absolute bottom-6 inset-x-6 z-[4] bg-white p-5 rounded-2xl shadow-xl border border-line/40 opacity-0 translate-y-4 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-100 group-hover:opacity-100 group-hover:translate-y-0">
+                  <span className="inline-flex text-[8px] font-bold uppercase tracking-wider text-accent bg-accent-soft px-2.5 py-0.5 rounded-md mb-2.5 w-fit">
+                    {service.tag}
+                  </span>
+
+                  <h3 className="font-display font-bold text-sm text-ink mb-1.5 leading-tight">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-[10px] text-ink-soft leading-relaxed mb-4">
+                    {service.subtitle}
+                  </p>
+
+                  <span className="inline-flex items-center justify-between w-full bg-paper-alt group-hover:bg-accent group-hover:text-white px-4 py-2 rounded-xl text-[10px] font-bold text-ink transition-colors duration-300">
+                    <span>{service.actionText}</span>
+                    <ArrowRight size={11} />
+                  </span>
+                </div>
               </div>
-
-              {/* Hover State */}
-              <div className="absolute inset-x-0 bottom-0 z-[4] p-5.5 flex flex-col justify-end h-[75%] bg-gradient-to-t from-black via-black/85 to-transparent opacity-0 translate-y-6 transition-all duration-[650ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-y-0">
-                <span className="inline-flex text-[8px] font-bold uppercase tracking-wider text-accent bg-accent-soft px-2.5 py-1 rounded-md mb-2.5 w-fit">
-                  {service.tag}
-                </span>
-
-                <h3 className="font-display font-bold text-sm text-white mb-2 leading-tight">
-                  {service.title}
-                </h3>
-
-                <p className="text-[10px] text-neutral-300 leading-relaxed mb-6">
-                  {service.subtitle}
-                </p>
-
-                <span className="inline-flex items-center justify-between w-full bg-white hover:bg-accent hover:text-white px-4 py-2.5 rounded-xl text-xs font-semibold text-ink transition-colors duration-300">
-                  <span>{service.actionText}</span>
-                  <ArrowRight size={12} />
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </Reveal>
       </div>
 

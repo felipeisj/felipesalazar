@@ -61,14 +61,14 @@ export function ClientPanel() {
           {doubledProjects.map((project, index) => (
             <div
               key={`${project.name}-${index}`}
-              className="w-[360px] flex-shrink-0 flex flex-col justify-between bg-white border border-slate-200/70 rounded-2xl p-6 shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 select-none"
+              className="w-[300px] flex-shrink-0 flex flex-col justify-between bg-white border border-slate-200/70 rounded-2xl p-5 shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 select-none"
             >
               <div>
                 {/* Header: Logo & Badge */}
                 <div className="flex items-start justify-between mb-4">
                   {/* Styled inline logo (Image or initials fallback) */}
                   {project.logoImage ? (
-                    <div className="h-11 w-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200/80 bg-white">
+                    <div className="h-10 w-10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200/80 bg-white">
                       <img
                         src={getCloudinaryUrl(project.logoImage, 'logo')}
                         alt=""
@@ -78,7 +78,7 @@ export function ClientPanel() {
                   ) : (
                     <div
                       className={[
-                        'h-11 w-11 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-sm bg-gradient-to-br',
+                        'h-10 w-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-sm bg-gradient-to-br',
                         project.logoColor
                       ].join(' ')}
                     >
@@ -87,31 +87,31 @@ export function ClientPanel() {
                   )}
 
                   {/* Category Badge */}
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[10px] font-bold tracking-wide ${project.badgeBg}`}>
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[9px] font-bold tracking-wide ${project.badgeBg}`}>
                     {getCategoryIcon(project.category)}
                     {project.badgeText}
                   </span>
                 </div>
 
                 {/* Title & Description */}
-                <h4 className="text-base font-bold text-slate-900 mb-1 leading-snug">
+                <h4 className="text-sm font-bold text-slate-900 mb-1 leading-snug">
                   {project.name}
                 </h4>
-                <p className="text-slate-600 text-xs leading-relaxed mb-4 line-clamp-2">
+                <p className="text-slate-600 text-[11px] leading-relaxed mb-4 line-clamp-2">
                   {project.description}
                 </p>
               </div>
 
               {/* Solution Highlights */}
-              <div className="pt-3.5 border-t border-slate-100 mt-auto">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Solución Implementada
+              <div className="pt-3 border-t border-slate-100 mt-auto">
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3 text-emerald-500" /> Solución
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1">
                   {project.projectHighlights && project.projectHighlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="text-[10px] font-medium bg-slate-50 text-slate-600 border border-slate-200/60 px-2 py-0.5 rounded-md"
+                      className="text-[9px] font-medium bg-slate-50 text-slate-600 border border-slate-200/60 px-2 py-0.5 rounded-md"
                     >
                       {highlight}
                     </span>
