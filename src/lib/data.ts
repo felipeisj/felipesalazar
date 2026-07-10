@@ -25,6 +25,7 @@ export const SERVICES = [
     imageSrc: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200&auto=format&fit=crop",
     tag: "iOS & Android",
     actionText: "Cotizar Aplicación",
+    color: "#4640de", // Premium Accent Blue
     features: [
       "Funciona sin Internet (base local)",
       "Notificaciones push (alertas directas)",
@@ -39,6 +40,7 @@ export const SERVICES = [
     imageSrc: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop",
     tag: "E-Commerce & Gestión",
     actionText: "Cotizar Plataforma",
+    color: "#4f46e5", // Royal Indigo
     features: [
       "Panel para actualizar stock e imágenes",
       "Pasarela de pago nacional (Webpay)",
@@ -53,6 +55,7 @@ export const SERVICES = [
     imageSrc: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
     tag: "Rendimiento & SEO",
     actionText: "Pedir Diagnóstico Gratis",
+    color: "#0f766e", // Deep Teal
     features: [
       "Carga instantánea en conexiones 4G/5G",
       "Mejora de puntaje en Google (Core Web Vitals)",
