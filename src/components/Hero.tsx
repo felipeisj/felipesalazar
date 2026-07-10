@@ -37,13 +37,13 @@ export default function Hero() {
   return (
     <section id="top" ref={rootRef} className="pt-40 pb-20 md:pt-48 md:pb-24">
       <div className="mx-auto max-w-3xl px-6">
-        <div data-hero-item className="flex items-center gap-3">
-          <span className="relative flex h-28 w-28 shrink-0 overflow-hidden rounded-full ring-2 ring-accent-soft">
+        <div data-hero-item className="flex items-center gap-4">
+          <span className="relative flex h-36 w-36 shrink-0 overflow-hidden rounded-full ring-2 ring-accent-soft">
             <Image
               src="/avatar2.jpg"
               alt={PERSONAL.name}
               fill
-              sizes="72px"
+              sizes="144px"
               className="object-cover"
               priority
             />

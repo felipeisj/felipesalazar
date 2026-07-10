@@ -140,7 +140,7 @@ export const PROJECTS: Project[] = [
     name: "Plataforma de Licitaciones con IA",
     category: "Freelance · SaaS con IA",
     description:
-      "Sistema que analiza licitaciones públicas con la API de Claude y estructura las variables clave para la toma de decisiones, sobre una arquitectura de microservicios con NestJS.",
+      "Sistema que analiza licitaciones públicas con IA y estructura las variables clave para la toma de decisiones, sobre una arquitectura de microservicios con NestJS.",
     stack: ["Python", "Supabase", "Claude API", "Railway"],
     accent: "#2C27A8",
   },
