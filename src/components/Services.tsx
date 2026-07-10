@@ -3,11 +3,26 @@
 import { useState } from "react";
 import { Cpu, ArrowRight } from "lucide-react";
 import Image from "next/image";
-import { SERVICES } from "@/lib/data";
+import { SERVICES, PERSONAL } from "@/lib/data";
 import Reveal from "./Reveal";
 
 export default function Services() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+
+  // Helper to format WhatsApp URL with predefined text
+  const getWhatsappUrl = (title: string) => {
+    let message = "";
+    if (title.toLowerCase().includes("app")) {
+      message = "¡Hola Felipe! Me interesa cotizar el desarrollo de una App Móvil para mi negocio.";
+    } else if (title.toLowerCase().includes("sitio") || title.toLowerCase().includes("web")) {
+      message = "¡Hola Felipe! Me interesa cotizar un Sitio Web o canal de ventas digital.";
+    } else {
+      message = "¡Hola Felipe! Me gustaría saber más sobre la Aceleración y Optimización de mi sitio web.";
+    }
+    
+    const baseUrl = PERSONAL.whatsapp || "https://wa.me/56949290943";
+    return `${baseUrl}?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <section id="services" className="py-16 md:py-20 border-t border-line bg-paper">
@@ -35,8 +50,8 @@ export default function Services() {
                     isActive ? "flex-[2]" : "flex-[0.5]"
                   }`}
                 >
-                  {/* Accessible link */}
-                  <a href={service.href} className="absolute inset-0 z-30" aria-label={service.title} />
+                  {/* Accessible link (inactive parts scroll to contact, active button triggers whatsapp) */}
+                  <a href="#contact" className="absolute inset-0 z-30" aria-label={service.title} />
 
                   {/* Background Image */}
                   <div className="absolute inset-0 z-0">
@@ -93,18 +108,22 @@ export default function Services() {
                       {service.title}
                     </h3>
 
-                    <p className="text-[10px] text-ink-soft leading-relaxed mb-4">
+                    <p className="text-[10px] text-ink-soft leading-relaxed">
                       {service.subtitle}
                     </p>
 
-                    <span
-                      className={`inline-flex items-center justify-between w-full px-4 py-2 rounded-xl text-[10px] font-bold text-ink transition-colors duration-300 ${
-                        isActive ? "bg-accent text-white" : "bg-paper-alt"
-                      }`}
-                    >
-                      <span>{service.actionText}</span>
-                      <ArrowRight size={11} />
-                    </span>
+                    {/* Shorter button, aligned to the right, pointing to WhatsApp with context */}
+                    <div className="flex justify-end mt-4">
+                      <a
+                        href={getWhatsappUrl(service.title)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-2 rounded-xl text-[10px] font-bold transition-all shadow-sm z-40 relative hover:scale-[1.03]"
+                      >
+                        <span>{service.actionText}</span>
+                        <ArrowRight size={11} />
+                      </a>
+                    </div>
                   </div>
                 </div>
               );
@@ -124,10 +143,9 @@ export default function Services() {
 
         <Reveal group className="space-y-6">
           {SERVICES.map((service) => (
-            <a
+            <div
               key={service.title}
-              href={service.href}
-              className="group flex flex-col bg-white border border-line rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+              className="flex flex-col bg-white border border-line rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
             >
               {/* Image */}
               <div className="relative h-44 w-full">
@@ -147,19 +165,24 @@ export default function Services() {
 
               {/* Content */}
               <div className="p-6">
-                <h3 className="text-base font-bold text-ink mb-1.5 group-hover:text-accent transition-colors">
+                <h3 className="text-base font-bold text-ink mb-1.5">
                   {service.title}
                 </h3>
-                <p className="text-ink-soft text-xs leading-relaxed mb-4">
+                <p className="text-ink-soft text-xs leading-relaxed mb-5">
                   {service.subtitle}
                 </p>
 
-                <div className="flex items-center gap-1 text-accent font-bold text-xs">
+                <a
+                  href={getWhatsappUrl(service.title)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm w-fit"
+                >
                   <span>{service.actionText}</span>
                   <ArrowRight size={13} />
-                </div>
+                </a>
               </div>
-            </a>
+            </div>
           ))}
         </Reveal>
       </div>
