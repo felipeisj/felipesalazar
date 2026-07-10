@@ -8,10 +8,10 @@ const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const SITE_URL = "https://felipesalazar.dev";
-const SITE_TITLE = "Felipe Salazar | Full-Stack Developer & Tech Lead";
+const SITE_URL = "https://felipesalazar.cl";
+const SITE_TITLE = "Desarrollo de Software a Medida y Apps Móviles | Felipe Salazar";
 const SITE_DESCRIPTION =
-  "Ingeniero Civil en Informatica y Tech Lead con 4+ anos de experiencia construyendo productos digitales de punta a punta: apps moviles publicadas en App Store y Play Store, plataformas SaaS con IA y APIs para fintech y ecommerce. React, React Native, Node.js, Python y AWS.";
+  "Desarrollo profesional de aplicaciones móviles iOS/Android, sitios web y catálogos de venta a medida en Chile. Trato directo, transparente y sin agencias intermediarias. Cotiza tu proyecto gratis.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -22,14 +22,15 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   keywords: [
     "Felipe Salazar",
-    "full stack developer",
-    "tech lead",
-    "React Native developer",
-    "Node.js developer",
-    "desarrollador full stack chile",
-    "AWS",
-    "Python",
-    "portfolio ingeniero de software",
+    "desarrollo de software chile",
+    "crear aplicacion movil chile",
+    "desarrollador react native chile",
+    "paginas web a medida chile",
+    "desarrollo e-commerce chile",
+    "desarrollo de aplicaciones moviles",
+    "programador freelance chile",
+    "acelerar pagina web lenta",
+    "software para empresas chile",
   ],
   alternates: { canonical: "/" },
   openGraph: {
