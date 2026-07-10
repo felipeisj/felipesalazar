@@ -39,12 +39,12 @@ export default function Services() {
                       {feature}
                     </span>
                   ))}
-                </div>
               </div>
             </div>
+            </div>
           ))}
-        </Reveal>
-      </div>
-    </section>
+    </Reveal>
+      </div >
+    </section >
   );
 }
