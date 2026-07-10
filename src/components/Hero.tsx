@@ -58,14 +58,14 @@ export default function Hero() {
           data-hero-item
           className="mt-8 font-display font-semibold text-3xl sm:text-4xl tracking-tight text-balance text-ink"
         >
-          Desarrollador Senior de <span className="text-accent">Software a Medida</span> y Apps Móviles.
+          Desarrollador de <span className="text-accent">Software a Medida</span> y Apps Móviles.
         </h1>
 
         <p
           data-hero-item
           className="mt-4 max-w-xl text-base md:text-lg text-ink-soft leading-relaxed"
         >
-          Hola, soy {PERSONAL.firstName}. Construyo plataformas web y aplicaciones móviles nativas iOS/Android de alto rendimiento para potenciar tu negocio. Sin intermediarios, trato directo.
+          Hola, soy {PERSONAL.firstName}. Construyo páginas web y aplicaciones móviles nativas iOS/Android de alto rendimiento para potenciar tu negocio. Sin intermediarios, trato directo.
         </p>
 
         <div data-hero-item className="mt-7 flex flex-wrap items-center gap-2.5">

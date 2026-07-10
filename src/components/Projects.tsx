@@ -11,7 +11,7 @@ export default function Projects() {
         <Reveal className="flex items-center gap-2.5">
           <FolderGit2 size={18} className="text-accent" />
           <h2 className="font-display font-semibold text-xl tracking-tight">
-            Proyectos
+            Algunos proyectos
           </h2>
         </Reveal>
 

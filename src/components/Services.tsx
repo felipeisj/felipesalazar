@@ -11,7 +11,6 @@ export default function Services() {
       {/* Desktop Grid (md and up) */}
       <div className="hidden md:block mx-auto max-w-5xl px-6">
         <Reveal className="flex items-center gap-2.5 mb-10">
-          <Cpu size={18} className="text-accent" />
           <h2 className="font-display font-semibold text-xl tracking-tight">
             Servicios y Soluciones
           </h2>
