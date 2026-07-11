@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -60,6 +61,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${poppins.variable} scroll-smooth`}>
+      <head>
+        {/* Google tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17500708468"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17500708468');
+          `}
+        </Script>
+      </head>
       <body className="font-sans antialiased bg-paper text-ink">
         {children}
       </body>
