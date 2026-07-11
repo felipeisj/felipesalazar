@@ -24,7 +24,7 @@ export default function Contact() {
             className="inline-flex items-center gap-2 rounded-full bg-[#25D366] text-white hover:bg-[#20ba5a] px-4 py-2 text-sm font-semibold transition-colors shadow-sm"
           >
             <MessageCircle size={15} className="fill-current" />
-            WhatsApp Business
+            WhatsApp
           </a>
           <a
             href={`mailto:${PERSONAL.email}`}

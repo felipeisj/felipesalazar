@@ -43,8 +43,13 @@ export function ClientPanel() {
         .animate-marquee-custom-class {
           display: flex;
           width: max-content;
-          gap: 1.5rem;
+          gap: 1rem;
           animation: marquee-custom-kf 37s linear infinite !important;
+        }
+        @media (min-width: 640px) {
+          .animate-marquee-custom-class {
+            gap: 1.5rem;
+          }
         }
         .animate-marquee-custom-class:hover {
           animation-play-state: paused !important;
@@ -61,7 +66,7 @@ export function ClientPanel() {
           {doubledProjects.map((project, index) => (
             <div
               key={`${project.name}-${index}`}
-              className="w-[300px] flex-shrink-0 flex flex-col justify-between bg-white border border-slate-200/70 rounded-2xl p-5 shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 select-none"
+              className="w-[240px] sm:w-[300px] flex-shrink-0 flex flex-col justify-between bg-white border border-slate-200/70 rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 select-none"
             >
               <div>
                 {/* Header: Logo & Badge */}
