@@ -2,7 +2,7 @@ export const PERSONAL = {
   name: "Felipe Salazar",
   firstName: "Felipe",
   role: "Consultor de Software & Desarrollador Senior",
-  email: "felipeslzar@gmail.com",
+  email: "hola@felipesalazar.cl",
   whatsapp: "https://wa.me/56949290943",
   github: "https://github.com/felipeisj",
   linkedin: "https://www.linkedin.com/in/felipe-salazar-jimenez/",
