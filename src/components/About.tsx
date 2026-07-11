@@ -36,6 +36,14 @@ export default function About() {
             </a>
             .
           </p>
+          <p className="text-sm md:text-base text-ink-soft leading-relaxed">
+            Además de mis proyectos para clientes, gestiono directamente las
+            campañas de Google Ads que promocionan este sitio a través de un
+            panel interno propio (<span className="font-medium text-ink">Felipe Salazar</span>)
+            que se conecta de forma segura vía OAuth a la API de Google Ads
+            para consultar métricas de rendimiento (clics, costo,
+            conversiones) de mis propias campañas.
+          </p>
         </Reveal>
 
         <Reveal group delay={0.1} className="mt-6 flex flex-wrap gap-1.5">
