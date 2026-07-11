@@ -1,12 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageSquare, Code2, Rocket, Play, ShieldAlert } from "lucide-react";
 import Image from "next/image";
 import Reveal from "./Reveal";
 
 export default function HowWeWork() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  // Close modal when pressing the Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsVideoOpen(false);
+      }
+    };
+    
+    if (isVideoOpen) {
+      window.addEventListener("keydown", handleEscape);
+    }
+    
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isVideoOpen]);
 
   const steps = [
     {
