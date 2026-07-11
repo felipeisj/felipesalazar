@@ -127,7 +127,7 @@ export default function HowWeWork() {
             </button>
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/_xQkGq0TIC0?autoplay=1"
+              src="https://www.youtube.com/embed/LAahQt5-eTA?si=3l-W6R4m9zYwSg6I&autoplay=1"
               title="Metodología de trabajo - Felipe Salazar"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
