@@ -1,0 +1,49 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;}}
+{\colortbl ;\red0\green0\blue0;\red0\green102\blue204;\red128\green128\blue128;}
+\viewkind4\uc1\pard\cf1\f0\fs24\b\fs32 GOOGLE ADS API - INTEGRATION DESIGN DOCUMENTATION\b0\fs24\par
+\pard\cf3\fs20 Applicant: Felipe Salazar Jimenez | Account ID: 162-975-6396\cf1\fs24\par
+\par
+\pard\b\fs26 1. EXECUTIVE SUMMARY & INTENDED USE\b0\fs24\par
+This design document describes the technical architecture and API integration patterns for a custom internal campaign management and optimization platform. The tool is developed for internal use by a single advertiser account (162-975-6396) to manage search campaigns, automate keyword bids, and adjust daily budgets based on performance KPIs.\par
+The application acts as a secure local API client/agent, querying campaign performance metrics and sending management directives back to the Google Ads API.\par
+\par
+\pard\b\fs26 2. SYSTEM ARCHITECTURE & DATA FLOW\b0\fs24\par
+The tool is designed as a standalone secure node service running on a local desktop environment. It interacts directly with Google's servers over TLS 1.3 encrypted REST/gRPC endpoints.\par
+\par
+\b Data Flow Cycle:\b0\par
+1. The tool authenticates using OAuth 2.0 credentials (Client ID, Client Secret, and Refresh Token).\par
+2. A secure session client is initialized using the Developer Token (Test/Basic Level).\par
+3. The tool queries campaign metadata and metric performance.\par
+4. If performance KPIs (e.g. Cost Per Conversion) exceed predefined thresholds, the system executes mutative actions (pausing keywords, adjusting budgets) via secure mutate requests.\par
+\par
+\pard\b\fs26 3. SPECIFIC GOOGLE ADS API SERVICES & METHODS TO BE USED\b0\fs24\par
+The application will communicate with the Google Ads API v16/v17 using the following specific services and methods:\par
+\par
+\pard\li360\b a) GoogleAdsService (Search & SearchStream)\b0\par
+\i Method:\i0  {\f1\fs18 GoogleAdsService.SearchStream}\par
+\i Query Syntax:\i0  Google Ads Query Language (GAQL).\par
+\i Purpose:\i0  To pull daily performance metrics (Impressions, Clicks, Cost, Conversions, Search Impression Share) at the Campaign, Ad Group, and Keyword level to feed the automation logic.\par
+\par
+\b b) CampaignService (MutateCampaigns)\b0\par
+\i Method:\i0  {\f1\fs18 CampaignService.MutateCampaigns}\par
+\i Purpose:\i0  To adjust campaign daily budgets dynamically when high-converting periods are identified or to cap budgets when efficiency drops.\par
+\par
+\b c) AdGroupService & AdGroupBidModifierService\b0\par
+\i Method:\i0  {\f1\fs18 AdGroupService.MutateAdGroups}\par
+\i Purpose:\i0  To pause or activate specific ad groups dynamically based on real-time performance thresholds.\par
+\par
+\b d) AdGroupCriterionService (MutateAdGroupCriteria)\b0\par
+\i Method:\i0  {\f1\fs18 AdGroupCriterionService.MutateAdGroupCriteria}\par
+\i Purpose:\i0  To pause underperforming keywords or change keyword match types programmatically.\par
+\pard\par
+\pard\b\fs26 4. OAUTH 2.0 AUTHENTICATION & DATA STORAGE POLICY\b0\fs24\par
+\pard\b\i Credentials Storage:\b0\i0  No credentials or sensitive API keys are hardcoded in the codebase. All secrets (Developer Token, Client ID, Client Secret, and OAuth 2.0 Refresh Token) are loaded at runtime from a secure, local environment configuration file (.env) protected by local OS-level access control lists (ACLs).\par
+\pard\b\i Token Rotation:\b0\i0  Access tokens are refreshed dynamically in-memory using the offline Refresh Token flow. Expired access tokens are discarded immediately.\par
+\pard\b\i Data Retention:\b0\i0  The tool does not store, cache, or transmit campaign data to any third-party databases. All analytics metrics pulled from the API are processed in-memory for the duration of the optimization loop and discarded.\par
+\par
+\pard\b\fs26 5. COMPLIANCE & RATE LIMITING RESILIENCY\b0\fs24\par
+The system is built to strictly adhere to the Google Ads API Terms of Service:\par
+* \b Rate Limits (429/ResourceExhausted):\b0  The client implements an exponential backoff retry mechanism (using standard gRPC status code hooks) to handle API rate limits gracefully without overloading Google servers.\par
+* \b Mutate Operations:\b0  Mutate requests are sent in batches using the recommended mutate operations limit to ensure optimal transactional integrity.\par
+}

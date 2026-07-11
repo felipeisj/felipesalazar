@@ -19,7 +19,12 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+
+# mcp server (local secrets + deps)
+mcp/node_modules
+mcp/.env
 
 # vercel
 .vercel
