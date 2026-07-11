@@ -49,6 +49,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+export const viewport = {
+  themeColor: "#16161d",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

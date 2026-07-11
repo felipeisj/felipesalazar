@@ -70,7 +70,7 @@ export default function HowWeWork() {
 
                 {/* Video Duration / Tag */}
                 <div className="absolute bottom-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white tracking-wide border border-white/10">
-                  Ver Video (1:20 min)
+                  Ver Video (30 segundos)
                 </div>
               </div>
 
@@ -127,7 +127,7 @@ export default function HowWeWork() {
             </button>
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ" // Placeholder video
+              src="https://www.youtube.com/embed/_xQkGq0TIC0?autoplay=1"
               title="Metodología de trabajo - Felipe Salazar"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

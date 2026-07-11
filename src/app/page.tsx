@@ -17,7 +17,7 @@ export default function Home() {
         <Hero />
         <Services />
         <HowWeWork />
-        
+
         {/* Clientes Section */}
         <section id="clientes" className="py-16 md:py-20 border-t border-line bg-white overflow-hidden">
           <div className="mx-auto max-w-5xl px-6">
@@ -36,7 +36,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Projects />
+        {/* <Projects /> */}
         <About />
         <Contact />
       </main>
