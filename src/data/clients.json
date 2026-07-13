@@ -13,22 +13,24 @@
       "Gestión MOP",
       "Reportes de terreno"
     ],
-    "logoImage": "saer-ti/clients/ktnmdxo9xr9ngduuq1sf"
+    "logoImage": "saer-ti/clients/ktnmdxo9xr9ngduuq1sf",
+    "url": "https://mpfrental.cl"
   },
   {
-    "id": "nova-horizonte",
-    "name": "Nova Horizonte",
-    "category": "Construcción",
-    "description": "Digitalización del control diario de maquinaria y despacho de materiales para obras viales.",
-    "logoText": "NH",
+    "id": "fleetcore",
+    "name": "FleetCore",
+    "category": "Desarrollo a Medida",
+    "description": "Plataforma para gestionar proyectos de ingeniería, optimización de recursos y control de flota.",
+    "logoText": "FC",
     "logoColor": "from-amber-600 to-orange-500",
     "badgeBg": "bg-amber-50 text-amber-700 border-amber-200/60",
-    "badgeText": "Edificación y Vías",
+    "badgeText": "Gestión & Ingeniería",
     "projectHighlights": [
-      "Control diario digital",
-      "Despacho de materiales",
-      "Uso de maquinaria"
-    ]
+      "Control de flota",
+      "Mantenimiento predictivo",
+      "Reportes técnicos"
+    ],
+    "url": "https://fleetcore.cl"
   },
   {
     "id": "metal-austral",
@@ -96,6 +98,6 @@
       "Chat directo in-app"
     ],
     "logoImage": "saer-ti/clients/inpmtfj73tnmfdkwpomj",
-    "url": "https://play.google.com/store/apps/details?id=com.pololitos.app"
+    "url": "https://pololitos.cl"
   }
 ]
