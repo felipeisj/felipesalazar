@@ -13,7 +13,6 @@ export const NAV_LINKS = [
   { label: "Inicio", href: "#top" },
   { label: "Servicios", href: "#services" },
   { label: "Clientes", href: "#clientes" },
-  { label: "Proyectos", href: "#work" },
   { label: "Sobre mí", href: "#about" },
   { label: "Contacto", href: "#contact" },
 ];
@@ -121,8 +120,8 @@ export const PROJECTS: Project[] = [
       "CI/CD con GitHub Actions + EAS Build, monitoreo con Sentry y Firebase Analytics",
     ],
     stack: ["React Native", "Node.js", "AWS", "Next.js", "MySQL"],
-    playStoreUrl: "https://play.google.com/store/apps/details?id=com.pololitos.app",
-    appStoreUrl: "https://apps.apple.com/app/pololitos/id6737562916",
+    playStoreUrl: "https://pololitos.cl",
+    appStoreUrl: "https://pololitos.cl",
     accent: "#4640DE",
   },
   {

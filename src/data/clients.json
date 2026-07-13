@@ -44,7 +44,8 @@
       "Avance de montaje",
       "Control de calidad"
     ],
-    "logoImage": "saer-ti/clients/aisqadscabhk1h5uwyq0"
+    "logoImage": "saer-ti/clients/aisqadscabhk1h5uwyq0",
+    "url": "https://metalaustral.cl"
   },
   {
     "id": "lumarty",
@@ -60,7 +61,8 @@
       "Facturación automática",
       "Panel de control B2B"
     ],
-    "logoImage": "saer-ti/clients/qwqu1baucgtu8jqubrni"
+    "logoImage": "saer-ti/clients/qwqu1baucgtu8jqubrni",
+    "url": "https://lumartygourmet.cl"
   },
   {
     "id": "vilugron-propiedades",
@@ -76,7 +78,8 @@
       "Buscador de mapa",
       "Captación de leads"
     ],
-    "logoImage": "saer-ti/clients/te9fyoa8nqhnuecpd2yb"
+    "logoImage": "saer-ti/clients/te9fyoa8nqhnuecpd2yb",
+    "url": "https://vilugronpropiedades.cl"
   },
   {
     "id": "pololitos",
@@ -92,6 +95,7 @@
       "Pagos integrados",
       "Chat directo in-app"
     ],
-    "logoImage": "saer-ti/clients/inpmtfj73tnmfdkwpomj"
+    "logoImage": "saer-ti/clients/inpmtfj73tnmfdkwpomj",
+    "url": "https://play.google.com/store/apps/details?id=com.pololitos.app"
   }
 ]

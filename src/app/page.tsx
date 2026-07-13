@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import HowWeWork from "@/components/HowWeWork";
 import { ClientPanel } from "@/components/ClientPanel";
-import Projects from "@/components/Projects";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -36,7 +35,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* <Projects /> */}
         <About />
         <Contact />
       </main>
