@@ -5,10 +5,12 @@ import { gsap } from "gsap";
 import Image from "next/image";
 import { Mail } from "lucide-react";
 import { PERSONAL } from "@/lib/data";
+import { useLanguage } from "@/context/LanguageContext";
 import { GithubIcon, LinkedinIcon } from "./icons";
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -60,14 +62,22 @@ export default function Hero() {
           data-hero-item
           className="mt-6 font-display font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-tight text-balance text-ink leading-[1.1]"
         >
-          Desarrollador de <span className="text-accent">Software a Medida</span> y Apps Móviles.
+          {language === "es" ? (
+            <>
+              Desarrollador de <span className="text-accent">Software a Medida</span> y Apps Móviles.
+            </>
+          ) : (
+            <>
+              Custom <span className="text-accent">Software &amp; Mobile App</span> Developer.
+            </>
+          )}
         </h1>
 
         <p
           data-hero-item
           className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-ink-soft leading-relaxed"
         >
-          Hola, soy {PERSONAL.firstName}. Construyo páginas web y aplicaciones móviles nativas iOS/Android de alto rendimiento para potenciar tu negocio. Sin intermediarios, trato directo.
+          {t("hero.subtitle")}
         </p>
 
         <div data-hero-item className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
@@ -78,14 +88,14 @@ export default function Hero() {
             className="inline-flex items-center gap-2 rounded-full bg-[#25D366] text-white hover:bg-[#20ba5a] px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm"
           >
             <WhatsAppIcon size={16} />
-            Hablemos por WhatsApp
+            {t("hero.whatsappCTA")}
           </a>
           <a
             href={`mailto:${PERSONAL.email}`}
             className="inline-flex items-center gap-2 rounded-full bg-ink text-paper px-4 py-2.5 text-sm font-medium hover:bg-accent transition-colors shadow-sm"
           >
             <Mail size={15} />
-            Escríbeme un Correo
+            {t("hero.emailCTA")}
           </a>
           <a
             href={PERSONAL.linkedin}
@@ -94,7 +104,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink hover:border-accent hover:text-accent transition-colors"
           >
             <LinkedinIcon size={15} />
-            LinkedIn
+            {t("hero.linkedinCTA")}
           </a>
         </div>
       </div>

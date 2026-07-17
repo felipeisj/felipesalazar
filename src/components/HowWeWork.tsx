@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MessageSquare, Code2, Rocket, Play, ShieldAlert } from "lucide-react";
+import { MessageSquare, Code2, Rocket, Play } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 import Reveal from "./Reveal";
 
 export default function HowWeWork() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const { t } = useLanguage();
 
   // Close modal when pressing the Escape key
   useEffect(() => {
@@ -15,46 +17,36 @@ export default function HowWeWork() {
         setIsVideoOpen(false);
       }
     };
-    
+
     if (isVideoOpen) {
       window.addEventListener("keydown", handleEscape);
     }
-    
+
     return () => {
       window.removeEventListener("keydown", handleEscape);
     };
   }, [isVideoOpen]);
 
-  const steps = [
-    {
-      icon: MessageSquare,
-      title: "1. Conversación y Propuesta (Gratis)",
-      description: "Nos reunimos por Meet o conversamos por WhatsApp para analizar tu idea. Te entrego una cotización detallada con plazos reales y un precio fijo, sin sorpresas.",
-    },
-    {
-      icon: Code2,
-      title: "2. Desarrollo con Avance Semanal",
-      description: "No esperas meses para ver resultados. Cada semana tendrás acceso a un enlace de prueba para que pruebes el avance real directamente en tu celular o computador.",
-    },
-    {
-      icon: Rocket,
-      title: "3. Despegue y Soporte Continuo",
-      description: "Publicamos tu app en las tiendas (App Store/Google Play) o lanzamos tu sitio web. Te enseño a usar el panel autoadministrable y te doy soporte técnico continuo.",
-    },
-  ];
+  const stepsData = t("process.steps") as any[];
+  const icons = [MessageSquare, Code2, Rocket];
+  const steps = stepsData.map((s, index) => ({
+    icon: icons[index] || Code2,
+    title: s.title,
+    description: s.description,
+  }));
 
   return (
     <section className="py-16 md:py-20 bg-paper-alt border-t border-b border-line/30">
       <div className="mx-auto max-w-4xl px-6">
         <Reveal className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">
-            El Proceso
+            {t("process.label")}
           </span>
           <h2 className="font-display font-semibold text-2xl sm:text-3xl tracking-tight text-ink">
-            Cómo trabajo en 3 simples pasos
+            {t("process.title")}
           </h2>
           <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-            Sin intermediarios ni burocracia de agencias. Un proceso directo, transparente y enfocado en entregar valor real a tu negocio.
+            {t("process.subtitle")}
           </p>
         </Reveal>
 
@@ -87,13 +79,13 @@ export default function HowWeWork() {
 
                 {/* Video Duration / Tag */}
                 <div className="absolute bottom-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white tracking-wide border border-white/10">
-                  Ver Video (30 segundos)
+                  {t("process.videoCTA")}
                 </div>
               </div>
 
               {/* Video Subtitle */}
               <p className="mt-3.5 text-center text-xs text-ink-soft leading-relaxed italic max-w-[280px] mx-auto">
-                "Mira este video corto donde te explico cómo trabajo y cómo aseguro el éxito de tu proyecto."
+                {t("process.videoSubtitle")}
               </p>
             </Reveal>
           </div>
@@ -140,7 +132,7 @@ export default function HowWeWork() {
               onClick={() => setIsVideoOpen(false)}
               className="absolute top-3 right-3 z-20 text-white/80 hover:text-white bg-black/60 hover:bg-black/80 px-3 py-1.5 rounded-full transition-colors text-xs font-bold border border-white/10"
             >
-              ✕ Cerrar
+              {t("process.videoClose")}
             </button>
             <iframe
               className="w-full h-full"

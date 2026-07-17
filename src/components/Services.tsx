@@ -4,24 +4,30 @@ import { useState } from "react";
 import { Cpu, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { SERVICES, PERSONAL } from "@/lib/data";
+import { useLanguage } from "@/context/LanguageContext";
 import Reveal from "./Reveal";
 
 export default function Services() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const { t } = useLanguage();
 
-  // Helper to format WhatsApp URL with predefined text
-  const getWhatsappUrl = (title: string) => {
-    let message = "";
-    if (title.toLowerCase().includes("app")) {
-      message = "¡Hola Felipe! Me interesa cotizar el desarrollo de una App Móvil para mi negocio.";
-    } else if (title.toLowerCase().includes("sitio") || title.toLowerCase().includes("web")) {
-      message = "¡Hola Felipe! Me interesa cotizar un Sitio Web o canal de ventas digital.";
-    } else {
-      message = "¡Hola Felipe! Me gustaría saber más sobre la Aceleración y Optimización de mi sitio web.";
-    }
+  const translatedServices = t("services.items") as any[];
+  const mergedServices = SERVICES.map((staticService, idx) => {
+    const translated = translatedServices[idx] || {};
+    return {
+      ...staticService,
+      title: translated.title || staticService.title,
+      subtitle: translated.subtitle || staticService.subtitle,
+      tag: translated.tag || staticService.tag,
+      actionText: translated.actionText || staticService.actionText,
+      features: translated.features || staticService.features,
+      whatsappMessage: translated.whatsappMessage || "",
+    };
+  });
 
+  const getWhatsappUrl = (service: typeof mergedServices[0]) => {
     const baseUrl = PERSONAL.whatsapp || "https://wa.me/56949290943";
-    return `${baseUrl}?text=${encodeURIComponent(message)}`;
+    return `${baseUrl}?text=${encodeURIComponent(service.whatsappMessage)}`;
   };
 
   return (
@@ -30,7 +36,7 @@ export default function Services() {
       <div className="hidden md:block mx-auto max-w-5xl px-6">
         <Reveal className="flex items-center gap-2.5 mb-10">
           <h2 className="font-display font-semibold text-xl tracking-tight">
-            Servicios y Soluciones
+            {t("services.label")}
           </h2>
         </Reveal>
 
@@ -39,7 +45,7 @@ export default function Services() {
             className="flex h-[500px] w-full relative divide-x divide-white/10"
             onMouseLeave={() => setActiveIndex(0)}
           >
-            {SERVICES.map((service, index) => {
+            {mergedServices.map((service, index) => {
               const isActive = activeIndex === index;
               return (
                 <div
@@ -109,7 +115,7 @@ export default function Services() {
                     {/* Shorter button, aligned to the right, pointing to WhatsApp with context */}
                     <div className="flex justify-end mt-4">
                       <a
-                        href={getWhatsappUrl(service.title)}
+                        href={getWhatsappUrl(service)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-2 rounded-xl text-[10px] font-bold transition-all shadow-sm z-40 relative hover:scale-[1.03]"
@@ -131,12 +137,12 @@ export default function Services() {
         <Reveal className="flex items-center gap-2.5 mb-6">
           <Cpu size={18} className="text-accent" />
           <h2 className="font-display font-semibold text-xl tracking-tight">
-            Servicios y Soluciones
+            {t("services.label")}
           </h2>
         </Reveal>
 
         <Reveal group className="space-y-6">
-          {SERVICES.map((service) => (
+          {mergedServices.map((service) => (
             <div
               key={service.title}
               className="flex flex-col bg-white border border-line rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
@@ -167,7 +173,7 @@ export default function Services() {
                 </p>
 
                 <a
-                  href={getWhatsappUrl(service.title)}
+                  href={getWhatsappUrl(service)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm w-fit"

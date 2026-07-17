@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -77,7 +78,9 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="font-sans antialiased bg-paper text-ink">
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

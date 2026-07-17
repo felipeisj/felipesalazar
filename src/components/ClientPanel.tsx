@@ -1,6 +1,9 @@
+"use client";
+
 import { HardHat, Code2, Smartphone, ShieldCheck } from 'lucide-react';
 import initialClients from '@/data/clients.json';
 import { getCloudinaryUrl } from '@/lib/cloudinary-helper';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ClientProject {
   id?: string;
@@ -17,6 +20,7 @@ interface ClientProject {
 }
 
 export function ClientPanel() {
+  const { t } = useLanguage();
   const projects = initialClients as ClientProject[];
 
   const getCategoryIcon = (category: ClientProject['category']) => {
@@ -30,8 +34,21 @@ export function ClientPanel() {
     }
   };
 
+  const translatedProjects = projects.map((c) => {
+    const translation = t(`clients.items.${c.id as any}` as any) as any;
+    if (translation && typeof translation === "object") {
+      return {
+        ...c,
+        description: translation.description || c.description,
+        badgeText: translation.badgeText || c.badgeText,
+        projectHighlights: translation.highlights || c.projectHighlights,
+      };
+    }
+    return c;
+  });
+
   // Triplicamos la lista para asegurar un scroll continuo sin saltos visuales
-  const doubledProjects = [...projects, ...projects, ...projects];
+  const doubledProjects = [...translatedProjects, ...translatedProjects, ...translatedProjects];
 
   return (
     <div className="relative w-full overflow-hidden py-4">
@@ -130,7 +147,7 @@ export function ClientPanel() {
                     <ShieldCheck className="h-3 w-3 text-emerald-500" /> Solución
                   </p>
                   <div className="flex flex-wrap gap-1">
-                    {project.projectHighlights && project.projectHighlights.map((highlight) => (
+                    {project.projectHighlights && project.projectHighlights.map((highlight: string) => (
                       <span
                         key={highlight}
                         className="text-[9px] font-medium bg-slate-50 text-slate-600 border border-slate-200/60 px-2 py-0.5 rounded-md"
