@@ -132,7 +132,6 @@ export const translations = {
       email: "Enviar Correo",
     },
     footer: {
-      builtWith: "Construido con Next.js, TypeScript & Tailwind CSS.",
       location: "Chile · Remoto",
     }
   },
@@ -269,7 +268,6 @@ export const translations = {
       email: "Send Email",
     },
     footer: {
-      builtWith: "Built with Next.js, TypeScript & Tailwind CSS.",
       location: "Chile · Remote",
     }
   }
@@ -283,4 +281,4 @@ export type TranslationKey =
   | "clients.label" | "clients.title" | "clients.subtitle"
   | "about.title" | "about.paragraph1" | "about.paragraph2" | "about.cvLinkText" | "about.paragraph3"
   | "contact.title" | "contact.text" | "contact.whatsapp" | "contact.email"
-  | "footer.builtWith" | "footer.location";
+  | "footer.location";
