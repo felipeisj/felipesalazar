@@ -59,7 +59,6 @@ async function queryGoogleAds(query) {
       "Content-Type": "application/json",
       "developer-token": DEVELOPER_TOKEN,
       "Authorization": `Bearer ${accessToken}`,
-      "login-customer-id": MANAGER_CUSTOMER_ID, // Required for manager account developer token auth
     },
     body: JSON.stringify({ query }),
   });
@@ -179,8 +178,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           metrics.impressions,
           metrics.clicks,
           metrics.cost_micros
-        FROM ad_group_criterion
-        WHERE ad_group_criterion.type = 'KEYWORD'
+        FROM keyword_view
       `;
       const results = await queryGoogleAds(query);
       
@@ -227,7 +225,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "Content-Type": "application/json",
           "developer-token": DEVELOPER_TOKEN,
           "Authorization": `Bearer ${accessToken}`,
-          "login-customer-id": MANAGER_CUSTOMER_ID,
         },
         body: JSON.stringify({
           operations: [

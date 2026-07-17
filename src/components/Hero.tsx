@@ -36,6 +36,15 @@ export default function Hero() {
     </svg>
   );
 
+  const trackConversion = (label: string | undefined) => {
+    if (!label || label.includes("AQUÍ")) return;
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "conversion", {
+        send_to: `AW-17500708468/${label}`,
+      });
+    }
+  };
+
   return (
     <section id="top" ref={rootRef} className="relative pt-44 pb-24 md:pt-52 md:pb-32 overflow-hidden">
       {/* Soft Ambient Glow */}
@@ -70,7 +79,8 @@ export default function Hero() {
             <>
               Custom <span className="text-accent">Software &amp; Mobile App</span> Developer.
             </>
-          )}
+          )
+          }
         </h1>
 
         <p
@@ -85,6 +95,7 @@ export default function Hero() {
             href={PERSONAL.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_WHATSAPP_CONVERSION_LABEL)}
             className="inline-flex items-center gap-2 rounded-full bg-[#25D366] text-white hover:bg-[#20ba5a] px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm"
           >
             <WhatsAppIcon size={16} />
@@ -92,6 +103,7 @@ export default function Hero() {
           </a>
           <a
             href={`mailto:${PERSONAL.email}`}
+            onClick={() => trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_EMAIL_CONVERSION_LABEL)}
             className="inline-flex items-center gap-2 rounded-full bg-ink text-paper px-4 py-2.5 text-sm font-medium hover:bg-accent transition-colors shadow-sm"
           >
             <Mail size={15} />
