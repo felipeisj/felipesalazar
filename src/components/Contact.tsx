@@ -12,7 +12,7 @@ export default function Contact() {
     name: "",
     email: "",
     whatsapp: "",
-    budget: "< $1.000.000 CLP",
+    budget: "Web Autoadministrable (~ $400.000 CLP)",
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -58,7 +58,7 @@ export default function Contact() {
           name: "",
           email: "",
           whatsapp: "",
-          budget: "< $1.000.000 CLP",
+          budget: "Web Autoadministrable (~ $400.000 CLP)",
           message: "",
         });
       } else {
@@ -171,9 +171,9 @@ export default function Contact() {
                       onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                       className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors cursor-pointer"
                     >
-                      <option>&lt; $1.000.000 CLP</option>
-                      <option>$1.000.000 - $3.000.000 CLP</option>
-                      <option>&gt; $3.000.000 CLP</option>
+                      <option value="Web Autoadministrable (~ $400.000 CLP)">{t("contact.budgetOption1")}</option>
+                      <option value="E-Commerce / Tienda Online (~ $1.000.000 CLP)">{t("contact.budgetOption2")}</option>
+                      <option value="App Móvil / Sistema a medida">{t("contact.budgetOption3")}</option>
                     </select>
                   </div>
                 </div>

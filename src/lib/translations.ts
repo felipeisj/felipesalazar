@@ -138,6 +138,9 @@ export const translations = {
       fieldEmail: "Correo electrónico *",
       fieldPhone: "WhatsApp (Opcional)",
       fieldBudget: "Presupuesto estimado",
+      budgetOption1: "Web Autoadministrable (~ $400.000 CLP)",
+      budgetOption2: "E-Commerce / Tienda Online (~ $1.000.000 CLP)",
+      budgetOption3: "App Móvil / Sistema a medida",
       fieldMessage: "Detalle del proyecto o idea *",
       placeholderName: "Ej. Juan Pérez",
       placeholderEmail: "juan@empresa.com",
@@ -291,6 +294,9 @@ export const translations = {
       fieldEmail: "Email address *",
       fieldPhone: "WhatsApp (Optional)",
       fieldBudget: "Estimated budget",
+      budgetOption1: "Self-Managed Website (~ $400.000 CLP)",
+      budgetOption2: "E-Commerce / Online Store (~ $1.000.000 CLP)",
+      budgetOption3: "Custom Mobile App / Software System",
       fieldMessage: "Project details or idea *",
       placeholderName: "E.g. John Doe",
       placeholderEmail: "john@company.com",
@@ -317,6 +323,7 @@ export type TranslationKey =
   | "contact.title" | "contact.text" | "contact.whatsapp" | "contact.email"
   | "contact.formTitle" | "contact.formSubtitle" | "contact.whatsappCTA" | "contact.emailCTA"
   | "contact.fieldName" | "contact.fieldEmail" | "contact.fieldPhone" | "contact.fieldBudget" | "contact.fieldMessage"
+  | "contact.budgetOption1" | "contact.budgetOption2" | "contact.budgetOption3"
   | "contact.placeholderName" | "contact.placeholderEmail" | "contact.placeholderPhone" | "contact.placeholderMessage"
   | "contact.submitButton" | "contact.submittingButton" | "contact.successMessage" | "contact.errorMessage"
   | "footer.location";
