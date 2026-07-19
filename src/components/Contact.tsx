@@ -80,13 +80,13 @@ export default function Contact() {
             <Reveal className="flex items-center gap-2.5">
               <MessageCircle size={18} className="text-accent" />
               <h2 className="font-display font-semibold text-2xl tracking-tight text-ink">
-                ¿Tienes un proyecto en mente?
+                {t("contact.formTitle")}
               </h2>
             </Reveal>
 
             <Reveal delay={0.05} className="mt-4">
               <p className="text-sm md:text-base text-ink-soft leading-relaxed">
-                Cuéntame tu idea a través del formulario o contáctame directamente por los canales habituales. Responderé en menos de 24 horas.
+                {t("contact.formSubtitle")}
               </p>
             </Reveal>
 
@@ -99,7 +99,7 @@ export default function Contact() {
                 className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#25D366] text-white hover:bg-[#20ba5a] px-6 py-3 text-sm font-semibold transition-colors shadow-sm w-full sm:w-auto"
               >
                 <MessageCircle size={16} className="fill-current" />
-                Hablemos por WhatsApp
+                {t("contact.whatsappCTA")}
               </a>
               <a
                 href={`mailto:${PERSONAL.email}`}
@@ -107,7 +107,7 @@ export default function Contact() {
                 className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink text-paper px-6 py-3 text-sm font-medium hover:bg-accent transition-colors shadow-sm w-full sm:w-auto"
               >
                 <Mail size={16} />
-                Enviar correo electrónico
+                {t("contact.emailCTA")}
               </a>
             </Reveal>
           </div>
@@ -119,7 +119,7 @@ export default function Contact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
-                      Nombre completo *
+                      {t("contact.fieldName")}
                     </label>
                     <input
                       type="text"
@@ -127,13 +127,13 @@ export default function Contact() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Ej. Juan Pérez"
+                      placeholder={t("contact.placeholderName")}
                       className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
-                      Correo electrónico *
+                      {t("contact.fieldEmail")}
                     </label>
                     <input
                       type="email"
@@ -141,7 +141,7 @@ export default function Contact() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="juan@empresa.com"
+                      placeholder={t("contact.placeholderEmail")}
                       className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
@@ -150,20 +150,20 @@ export default function Contact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="whatsapp" className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
-                      WhatsApp (Opcional)
+                      {t("contact.fieldPhone")}
                     </label>
                     <input
                       type="tel"
                       id="whatsapp"
                       value={formData.whatsapp}
                       onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                      placeholder="Ej. +569 1234 5678"
+                      placeholder={t("contact.placeholderPhone")}
                       className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
                   <div>
                     <label htmlFor="budget" className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
-                      Presupuesto estimado
+                      {t("contact.fieldBudget")}
                     </label>
                     <select
                       id="budget"
@@ -180,7 +180,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="message" className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
-                    Detalle del proyecto o idea *
+                    {t("contact.fieldMessage")}
                     </label>
                   <textarea
                     id="message"
@@ -188,7 +188,7 @@ export default function Contact() {
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Cuéntame brevemente qué necesitas construir (ej: plataforma web autoadministrable, aplicación móvil de despachos, landing page, etc.)"
+                    placeholder={t("contact.placeholderMessage")}
                     className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors resize-none leading-relaxed"
                   />
                 </div>
@@ -199,10 +199,10 @@ export default function Contact() {
                   className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-ink text-paper px-4 py-3 text-sm font-semibold hover:bg-accent transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {status === "loading" ? (
-                    "Enviando..."
+                    t("contact.submittingButton")
                   ) : (
                     <>
-                      Enviar propuesta de proyecto
+                      {t("contact.submitButton")}
                       <Send size={14} />
                     </>
                   )}
@@ -210,12 +210,12 @@ export default function Contact() {
 
                 {status === "success" && (
                   <p className="text-center text-xs font-medium text-emerald-600 mt-2">
-                    ¡Mensaje recibido! Te contactaré en breve para coordinar.
+                    {t("contact.successMessage")}
                   </p>
                 )}
                 {status === "error" && (
                   <p className="text-center text-xs font-medium text-rose-600 mt-2">
-                    Ocurrió un error. Por favor inténtalo de nuevo o háblame por WhatsApp.
+                    {t("contact.errorMessage")}
                   </p>
                 )}
               </form>

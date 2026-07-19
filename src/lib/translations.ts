@@ -130,6 +130,23 @@ export const translations = {
       text: "¿Un proyecto en mente? Escríbeme.",
       whatsapp: "WhatsApp",
       email: "Enviar Correo",
+      formTitle: "¿Tienes un proyecto en mente?",
+      formSubtitle: "Cuéntame tu idea a través del formulario o contáctame directamente por los canales habituales. Responderé en menos de 24 horas.",
+      whatsappCTA: "Hablemos por WhatsApp",
+      emailCTA: "Enviar correo electrónico",
+      fieldName: "Nombre completo *",
+      fieldEmail: "Correo electrónico *",
+      fieldPhone: "WhatsApp (Opcional)",
+      fieldBudget: "Presupuesto estimado",
+      fieldMessage: "Detalle del proyecto o idea *",
+      placeholderName: "Ej. Juan Pérez",
+      placeholderEmail: "juan@empresa.com",
+      placeholderPhone: "Ej. +569 1234 5678",
+      placeholderMessage: "Cuéntame brevemente qué necesitas construir (ej: plataforma web autoadministrable, aplicación móvil de despachos, landing page, etc.)",
+      submitButton: "Enviar propuesta de proyecto",
+      submittingButton: "Enviando...",
+      successMessage: "¡Mensaje recibido! Te contactaré en breve para coordinar.",
+      errorMessage: "Ocurrió un error. Por favor inténtalo de nuevo o háblame por WhatsApp.",
     },
     footer: {
       location: "Chile · Remoto",
@@ -266,6 +283,23 @@ export const translations = {
       text: "Have a project in mind? Drop me a line.",
       whatsapp: "WhatsApp",
       email: "Send Email",
+      formTitle: "Have a project in mind?",
+      formSubtitle: "Tell me about your idea via this form or contact me directly through my social channels. I will reply in less than 24 hours.",
+      whatsappCTA: "Chat on WhatsApp",
+      emailCTA: "Send me an Email",
+      fieldName: "Full name *",
+      fieldEmail: "Email address *",
+      fieldPhone: "WhatsApp (Optional)",
+      fieldBudget: "Estimated budget",
+      fieldMessage: "Project details or idea *",
+      placeholderName: "E.g. John Doe",
+      placeholderEmail: "john@company.com",
+      placeholderPhone: "E.g. +569 1234 5678",
+      placeholderMessage: "Tell me briefly what you need to build (e.g. self-managed website, delivery mobile app, landing page, etc.)",
+      submitButton: "Submit project proposal",
+      submittingButton: "Sending...",
+      successMessage: "Message received! I'll contact you shortly to coordinate.",
+      errorMessage: "An error occurred. Please try again or chat with me on WhatsApp.",
     },
     footer: {
       location: "Chile · Remote",
@@ -281,4 +315,8 @@ export type TranslationKey =
   | "clients.label" | "clients.title" | "clients.subtitle"
   | "about.title" | "about.paragraph1" | "about.paragraph2" | "about.cvLinkText" | "about.paragraph3"
   | "contact.title" | "contact.text" | "contact.whatsapp" | "contact.email"
+  | "contact.formTitle" | "contact.formSubtitle" | "contact.whatsappCTA" | "contact.emailCTA"
+  | "contact.fieldName" | "contact.fieldEmail" | "contact.fieldPhone" | "contact.fieldBudget" | "contact.fieldMessage"
+  | "contact.placeholderName" | "contact.placeholderEmail" | "contact.placeholderPhone" | "contact.placeholderMessage"
+  | "contact.submitButton" | "contact.submittingButton" | "contact.successMessage" | "contact.errorMessage"
   | "footer.location";
