@@ -138,7 +138,7 @@ export const translations = {
       fieldEmail: "Correo electrónico *",
       fieldPhone: "WhatsApp (Opcional)",
       fieldBudget: "Presupuesto estimado",
-      budgetOption1: "Web Autoadministrable ($400k)",
+      budgetOption1: "Web Autoadmin. ($400k)",
       budgetOption2: "E-Commerce / Tienda ($1M)",
       budgetOption3: "App / Sistema a medida",
       fieldMessage: "Detalle del proyecto o idea *",

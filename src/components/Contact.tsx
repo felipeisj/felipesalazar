@@ -12,7 +12,7 @@ export default function Contact() {
     name: "",
     email: "",
     whatsapp: "",
-    budget: "Web Autoadministrable ($400k)",
+    budget: "Web Autoadmin. ($400k)",
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -58,7 +58,7 @@ export default function Contact() {
           name: "",
           email: "",
           whatsapp: "",
-          budget: "Web Autoadministrable ($400k)",
+          budget: "Web Autoadmin. ($400k)",
           message: "",
         });
       } else {
@@ -169,9 +169,9 @@ export default function Contact() {
                       id="budget"
                       value={formData.budget}
                       onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                      className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors cursor-pointer"
+                      className="w-full rounded-lg border border-line pl-3 pr-6 py-2 text-[13px] md:text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors cursor-pointer"
                     >
-                      <option value="Web Autoadministrable ($400k)">{t("contact.budgetOption1")}</option>
+                      <option value="Web Autoadmin. ($400k)">{t("contact.budgetOption1")}</option>
                       <option value="E-Commerce / Tienda ($1M)">{t("contact.budgetOption2")}</option>
                       <option value="App / Sistema a medida">{t("contact.budgetOption3")}</option>
                     </select>
