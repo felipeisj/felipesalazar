@@ -102,7 +102,7 @@ export default function Contact() {
                 {t("contact.whatsappCTA")}
               </a>
               <a
-                href={`mailto:${PERSONAL.email}`}
+                href={`mailto:${PERSONAL.email}?subject=Cotizaci%C3%B3n%20de%20Proyecto%20Web%20/%20App`}
                 onClick={() => trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_EMAIL_CONVERSION_LABEL)}
                 className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink text-paper px-6 py-3 text-sm font-medium hover:bg-accent transition-colors shadow-sm w-full sm:w-auto"
               >

@@ -102,7 +102,7 @@ export default function Hero() {
             {t("hero.whatsappCTA")}
           </a>
           <a
-            href={`mailto:${PERSONAL.email}`}
+            href={`mailto:${PERSONAL.email}?subject=Cotizaci%C3%B3n%20de%20Proyecto%20Web%20/%20App`}
             onClick={() => trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_EMAIL_CONVERSION_LABEL)}
             className="inline-flex items-center gap-2 rounded-full bg-ink text-paper px-4 py-2.5 text-sm font-medium hover:bg-accent transition-colors shadow-sm"
           >
