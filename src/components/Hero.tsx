@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
-import { Mail } from "lucide-react";
+import Link from "next/link";
+import { Mail, Sparkles } from "lucide-react";
 import { PERSONAL } from "@/lib/data";
 import { useLanguage } from "@/context/LanguageContext";
 import { GithubIcon, LinkedinIcon } from "./icons";
@@ -92,6 +93,13 @@ export default function Hero() {
 
         <div data-hero-item className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
           <a
+            href="https://demos.felipesalazar.cl/solicitar"
+            className="inline-flex items-center gap-2 rounded-full bg-accent text-white hover:bg-accent-ink px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm group cursor-pointer"
+          >
+            <Sparkles size={15} className="fill-current animate-pulse text-white" />
+            {language === "es" ? "Solicitar Demo Gratis" : "Request Free Demo"}
+          </a>
+          <a
             href={PERSONAL.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
@@ -104,7 +112,7 @@ export default function Hero() {
           <a
             href={`mailto:${PERSONAL.email}?subject=Cotizaci%C3%B3n%20de%20Proyecto%20Web%20/%20App`}
             onClick={() => trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_EMAIL_CONVERSION_LABEL)}
-            className="inline-flex items-center gap-2 rounded-full bg-ink text-paper px-4 py-2.5 text-sm font-medium hover:bg-accent transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink hover:border-accent hover:text-accent transition-colors shadow-sm"
           >
             <Mail size={15} />
             {t("hero.emailCTA")}

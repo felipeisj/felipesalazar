@@ -6,6 +6,7 @@ export const translations = {
       clients: "Clientes",
       about: "Sobre mí",
       contact: "Contacto",
+      waitlist: "Demo Gratis",
     },
     hero: {
       title: "Desarrollador de Software a Medida y Apps Móviles.",
@@ -153,6 +154,51 @@ export const translations = {
     },
     footer: {
       location: "Chile · Remoto",
+    },
+    waitlist: {
+      title: "Consigue una Demo Web Gratis para tu Negocio",
+      subtitle: "Diseñamos y estructuramos una propuesta web personalizada para tu empresa en menos de 24 horas. Sin compromisos, sin contratos ni costos ocultos.",
+      capacityTitle: "Capacidad de Elaboración Diaria",
+      capacitySubtitle: "Preparamos hasta 10 demostraciones web gratuitas al día para nuevos negocios y emprendedores.",
+      slotsAvailable: "Cupos de demo disponibles hoy:",
+      slotsRemaining: "¡Aprovecha hoy! Quedan {count} cupos para hoy.",
+      slotsEmpty: "Cupos agotados por hoy. Regístrate para asegurar tu demo mañana.",
+      step1Title: "1. Información de tu Negocio",
+      step1Desc: "Ingresa el nombre, rubro comercial y sitio actual de tu negocio.",
+      step2Title: "2. Estructura de tu Web",
+      step2Desc: "Cuéntame cuál es tu frase comercial, servicios clave y público objetivo.",
+      step3Title: "3. Selecciona tu Estilo",
+      step3Desc: "Elige la paleta de colores de Canva que mejor represente a tu marca.",
+      step4Title: "4. Datos de Contacto",
+      step4Desc: "Déjanos tu nombre, email y teléfono para enviarte la propuesta.",
+      fieldName: "Nombre de tu Negocio *",
+      fieldSector: "Rubro / Sector del Negocio *",
+      fieldWebsite: "Sitio Web Actual (Opcional)",
+      fieldValueProp: "Eslogan o frase principal *",
+      fieldKeyServices: "Servicios o productos principales (nombra 2 o 3) *",
+      fieldTargetAudience: "Público objetivo (¿Quién es tu cliente ideal?) *",
+      fieldWebGoal: "¿Cuál es el objetivo principal de la web? *",
+      fieldContactName: "Tu Nombre de Contacto *",
+      fieldContactEmail: "Correo Electrónico *",
+      fieldContactPhone: "WhatsApp / Teléfono de Contacto *",
+      fieldPalette: "Elige el estilo visual para tu demo *",
+      placeholderName: "Ej. Cafetería Aromas",
+      placeholderSector: "Ej. Gastronomía, Tienda de ropa, Servicios",
+      placeholderWebsite: "Ej. www.miwebactual.cl",
+      placeholderValueProp: "Ej. Café de especialidad tostado localmente y repostería artesanal en Valdivia.",
+      placeholderKeyServices: "Ej. 1. Cafés de especialidad, 2. Repostería casera, 3. Venta de café en grano.",
+      placeholderTargetAudience: "Ej. Vecinos de la zona, estudiantes universitarios y aficionados al café.",
+      placeholderWebGoal: "Ej. Que la gente vea nuestro menú y nos mande un WhatsApp para reservar o pedir delivery.",
+      placeholderContactName: "Ej. Felipe Salazar",
+      placeholderContactEmail: "felipe@ejemplo.com",
+      placeholderContactPhone: "Ej. +569 1234 5678",
+      submitButton: "Solicitar mi Demo Web Gratis",
+      submittingButton: "Enviando solicitud...",
+      successMessage: "¡Excelente! He recibido tus datos y apartado un cupo para tu demo. Te escribiré pronto.",
+      errorMessage: "Hubo un error al procesar tu solicitud. Por favor, reintenta o háblame por WhatsApp.",
+      nextButton: "Siguiente",
+      backButton: "Atrás",
+      stepIndicator: "Paso {current} de {total}",
     }
   },
   en: {
@@ -162,6 +208,7 @@ export const translations = {
       clients: "Clients",
       about: "About me",
       contact: "Contact",
+      waitlist: "Free Demo",
     },
     hero: {
       title: "Custom Software & Mobile App Developer.",
@@ -309,12 +356,57 @@ export const translations = {
     },
     footer: {
       location: "Chile · Remote",
+    },
+    waitlist: {
+      title: "Get a Free Web Demo for Your Business",
+      subtitle: "We design and structure a custom web proposal for your business in under 24 hours. No commitments, no contracts or hidden costs.",
+      capacityTitle: "Daily Development Capacity",
+      capacitySubtitle: "We prepare up to 10 free web demos per day for new businesses and entrepreneurs.",
+      slotsAvailable: "Demo slots available today:",
+      slotsRemaining: "Hurry up! Only {count} slots remaining for today.",
+      slotsEmpty: "Slots fully booked for today. Join to secure your demo for tomorrow.",
+      step1Title: "1. Your Business Info",
+      step1Desc: "Enter the commercial name, sector, and current website of your business.",
+      step2Title: "2. Define Your Structure",
+      step2Desc: "Tell me about your tagline, key services, and target audience.",
+      step3Title: "3. Select Your Style",
+      step3Desc: "Choose the Canva color palette that best represents your brand identity.",
+      step4Title: "4. Contact Details",
+      step4Desc: "Leave your name, email, and phone so we can send the proposal.",
+      fieldName: "Business Name *",
+      fieldSector: "Business Sector / Industry *",
+      fieldWebsite: "Current Website (Optional)",
+      fieldValueProp: "Slogan or main value prop *",
+      fieldKeyServices: "Key services or products (name 2 or 3) *",
+      fieldTargetAudience: "Target audience (Who is your ideal customer?) *",
+      fieldWebGoal: "What is the main goal of the web? *",
+      fieldContactName: "Your Contact Name *",
+      fieldContactEmail: "Email Address *",
+      fieldContactPhone: "WhatsApp / Contact Phone *",
+      fieldPalette: "Choose visual style for your demo *",
+      placeholderName: "E.g. Coffee Haven",
+      placeholderSector: "E.g. Food & Beverage, Fashion, Services",
+      placeholderWebsite: "E.g. www.mycurrentsite.com",
+      placeholderValueProp: "E.g. Locally roasted specialty coffee and artisan pastries in Valdivia.",
+      placeholderKeyServices: "E.g. 1. Specialty coffees, 2. Homemade pastries, 3. Coffee beans sales.",
+      placeholderTargetAudience: "E.g. Neighborhood locals, college students, and specialty coffee enthusiasts.",
+      placeholderWebGoal: "E.g. For people to view our menu and send a WhatsApp to reserve or order delivery.",
+      placeholderContactName: "E.g. Felipe Salazar",
+      placeholderContactEmail: "felipe@example.com",
+      placeholderContactPhone: "E.g. +569 1234 5678",
+      submitButton: "Request My Free Web Demo",
+      submittingButton: "Submitting request...",
+      successMessage: "Great! I have received your info and reserved a slot for your demo. I will contact you soon.",
+      errorMessage: "There was an error processing your request. Please try again or chat with me on WhatsApp.",
+      nextButton: "Next",
+      backButton: "Back",
+      stepIndicator: "Step {current} of {total}",
     }
   }
 };
 
 export type TranslationKey =
-  | "nav.home" | "nav.services" | "nav.clients" | "nav.about" | "nav.contact"
+  | "nav.home" | "nav.services" | "nav.clients" | "nav.about" | "nav.contact" | "nav.waitlist"
   | "hero.title" | "hero.subtitle" | "hero.whatsappCTA" | "hero.emailCTA" | "hero.linkedinCTA"
   | "services.label" | "services.actionTextMobile" | "services.items"
   | "process.label" | "process.title" | "process.subtitle" | "process.videoCTA" | "process.videoSubtitle" | "process.videoClose" | "process.steps"
@@ -326,4 +418,11 @@ export type TranslationKey =
   | "contact.budgetOption1" | "contact.budgetOption2" | "contact.budgetOption3"
   | "contact.placeholderName" | "contact.placeholderEmail" | "contact.placeholderPhone" | "contact.placeholderMessage"
   | "contact.submitButton" | "contact.submittingButton" | "contact.successMessage" | "contact.errorMessage"
-  | "footer.location";
+  | "footer.location"
+  | "waitlist.title" | "waitlist.subtitle" | "waitlist.capacityTitle" | "waitlist.capacitySubtitle"
+  | "waitlist.slotsAvailable" | "waitlist.slotsRemaining" | "waitlist.slotsEmpty"
+  | "waitlist.step1Title" | "waitlist.step1Desc" | "waitlist.step2Title" | "waitlist.step2Desc" | "waitlist.step3Title" | "waitlist.step3Desc" | "waitlist.step4Title" | "waitlist.step4Desc"
+  | "waitlist.fieldName" | "waitlist.fieldSector" | "waitlist.fieldWebsite" | "waitlist.fieldValueProp" | "waitlist.fieldKeyServices" | "waitlist.fieldTargetAudience" | "waitlist.fieldWebGoal" | "waitlist.fieldContactName" | "waitlist.fieldContactEmail" | "waitlist.fieldContactPhone" | "waitlist.fieldPalette"
+  | "waitlist.placeholderName" | "waitlist.placeholderSector" | "waitlist.placeholderWebsite" | "waitlist.placeholderValueProp" | "waitlist.placeholderKeyServices" | "waitlist.placeholderTargetAudience" | "waitlist.placeholderWebGoal" | "waitlist.placeholderContactName" | "waitlist.placeholderContactEmail" | "waitlist.placeholderContactPhone"
+  | "waitlist.submitButton" | "waitlist.submittingButton" | "waitlist.successMessage" | "waitlist.errorMessage"
+  | "waitlist.nextButton" | "waitlist.backButton" | "waitlist.stepIndicator";

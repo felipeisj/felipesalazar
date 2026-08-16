@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // El form viejo se consolidó en la landing de demos.
+      {
+        source: "/waitlist",
+        destination: "https://demos.felipesalazar.cl/solicitar",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

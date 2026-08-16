@@ -1,5 +1,6 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { NAV_LINKS } from "@/lib/data";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -33,12 +34,21 @@ export default function Nav() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-2 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs md:text-sm text-ink-soft hover:bg-paper-alt hover:text-ink transition-colors inline-block"
+              className="rounded-full px-2 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs md:text-sm text-ink-soft hover:bg-paper-alt hover:text-ink transition-colors inline-block font-medium"
             >
               {label}
             </a>
           );
         })}
+
+        {/* CTA a la landing de demos (subdominio) */}
+        <a
+          href="https://demos.felipesalazar.cl/solicitar"
+          className="rounded-full bg-accent text-white px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs md:text-sm font-semibold hover:bg-accent-ink transition-colors shadow-sm ml-1.5 flex items-center gap-1.5 cursor-pointer group"
+        >
+          <Sparkles size={12} className="fill-current text-white animate-pulse" />
+          {t("nav.waitlist")}
+        </a>
 
         {/* Language Switcher Sliding Toggle */}
         <button

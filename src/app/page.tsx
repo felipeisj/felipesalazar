@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import HowWeWork from "@/components/HowWeWork";
+import DemoBanner from "@/components/DemoBanner";
 import { ClientPanel } from "@/components/ClientPanel";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
@@ -21,6 +22,9 @@ export default function Home() {
         <Hero />
         <Services />
         <HowWeWork />
+
+        {/* Demo gratis -> demos.felipesalazar.cl */}
+        <DemoBanner />
 
         {/* Clientes Section */}
         <section id="clientes" className="py-16 md:py-20 border-t border-line bg-white overflow-hidden">
