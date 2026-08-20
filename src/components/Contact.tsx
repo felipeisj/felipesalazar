@@ -5,6 +5,7 @@ import { Mail, MessageCircle, Send } from "lucide-react";
 import { PERSONAL } from "@/lib/data";
 import { useLanguage } from "@/context/LanguageContext";
 import Reveal from "./Reveal";
+import PhoneInput from "./PhoneInput";
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -152,13 +153,9 @@ export default function Contact() {
                     <label htmlFor="whatsapp" className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
                       {t("contact.fieldPhone")}
                     </label>
-                    <input
-                      type="tel"
-                      id="whatsapp"
+                    <PhoneInput
                       value={formData.whatsapp}
-                      onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                      placeholder={t("contact.placeholderPhone")}
-                      className="w-full rounded-lg border border-line px-3.5 py-2 text-sm text-ink bg-paper focus:outline-none focus:border-accent transition-colors"
+                      onChange={(v) => setFormData({ ...formData, whatsapp: v })}
                     />
                   </div>
                   <div>
