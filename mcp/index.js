@@ -50,10 +50,14 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-// Helper to query Google Ads REST API v21
+// Google retires API versions roughly a year after release; a retired version
+// answers 404 on every call. Bump this when that happens (v21 died before 2026-11-08).
+const API_VERSION = "v26";
+
+// Helper to query the Google Ads REST API
 async function queryGoogleAds(query) {
   const accessToken = await getAccessToken();
-  const response = await fetch(`https://googleads.googleapis.com/v21/customers/${CLIENT_CUSTOMER_ID}/googleAds:search`, {
+  const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${CLIENT_CUSTOMER_ID}/googleAds:search`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +86,7 @@ async function queryGoogleAds(query) {
 // e.g. resourcePath "campaigns", "adGroups", "adGroupCriteria", "adGroupAds".
 async function mutateGoogleAds(resourcePath, operations) {
   const accessToken = await getAccessToken();
-  const response = await fetch(`https://googleads.googleapis.com/v21/customers/${CLIENT_CUSTOMER_ID}/${resourcePath}:mutate`, {
+  const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${CLIENT_CUSTOMER_ID}/${resourcePath}:mutate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -111,6 +115,61 @@ function resourceId(resourceName) {
   return resourceName.split("/").pop();
 }
 
+// Report period. Without a segments.date filter GAQL aggregates over an
+// undefined span, so reports always carry an explicit period.
+const DATE_RANGES = [
+  "TODAY",
+  "YESTERDAY",
+  "LAST_7_DAYS",
+  "LAST_14_DAYS",
+  "LAST_30_DAYS",
+  "THIS_MONTH",
+  "LAST_MONTH",
+  "ALL_TIME",
+];
+const DEFAULT_DATE_RANGE = "LAST_30_DAYS";
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+const PERIOD_PROPERTIES = {
+  date_range: {
+    type: "string",
+    enum: DATE_RANGES,
+    description: `Predefined period (default ${DEFAULT_DATE_RANGE}). ALL_TIME = no date filter.`,
+  },
+  since: {
+    type: "string",
+    description: "Start date YYYY-MM-DD, inclusive. Use together with 'until'; takes precedence over date_range.",
+  },
+  until: {
+    type: "string",
+    description: "End date YYYY-MM-DD, inclusive. Use together with 'since'.",
+  },
+};
+
+// Returns the GAQL condition for the requested period (null for ALL_TIME) and
+// a label echoed in the response. Values are validated against the enum/regex
+// before being interpolated into the query.
+function buildPeriod(args = {}) {
+  const { date_range, since, until } = args;
+  if (since || until) {
+    if (!since || !until) throw new Error("'since' and 'until' must be used together (YYYY-MM-DD).");
+    if (!ISO_DATE.test(since) || !ISO_DATE.test(until)) throw new Error("'since'/'until' must be YYYY-MM-DD.");
+    if (since > until) throw new Error("'since' cannot be after 'until'.");
+    return { where: `segments.date BETWEEN '${since}' AND '${until}'`, label: { since, until } };
+  }
+  const range = date_range || DEFAULT_DATE_RANGE;
+  if (!DATE_RANGES.includes(range)) {
+    throw new Error(`Invalid date_range '${range}'. Options: ${DATE_RANGES.join(", ")}.`);
+  }
+  if (range === "ALL_TIME") return { where: null, label: { date_range: "ALL_TIME" } };
+  return { where: `segments.date DURING ${range}`, label: { date_range: range } };
+}
+
+function costFromMicros(micros) {
+  const costCLP = Math.round(parseInt(micros || 0) / 1000000);
+  return { costCLP, cost: costCLP.toLocaleString("es-CL", { style: "currency", currency: "CLP" }) };
+}
+
 // Initialize MCP Server
 const server = new Server(
   {
@@ -128,18 +187,18 @@ const server = new Server(
 const TOOLS = [
   {
     name: "get_campaign_report",
-    description: "Get performance metrics (impressions, clicks, cost, conversions) for all campaigns.",
+    description: `Get performance metrics (impressions, clicks, cost, conversions) for all campaigns over a period (default ${DEFAULT_DATE_RANGE}; use since/until for a specific month). The response echoes the period used.`,
     inputSchema: {
       type: "object",
-      properties: {},
+      properties: PERIOD_PROPERTIES,
     },
   },
   {
     name: "get_keyword_report",
-    description: "List all active keywords in the client account along with clicks, impressions, cost, and match type.",
+    description: `List keywords in the client account with clicks, impressions, cost, and match type over a period (default ${DEFAULT_DATE_RANGE}; use since/until for a specific month). Keywords with no activity in the period may be omitted. The response echoes the period used.`,
     inputSchema: {
       type: "object",
-      properties: {},
+      properties: PERIOD_PROPERTIES,
     },
   },
   {
@@ -263,42 +322,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   
   try {
     if (name === "get_campaign_report") {
+      const period = buildPeriod(args);
       const query = `
-        SELECT 
-          campaign.id, 
-          campaign.name, 
-          campaign.status, 
+        SELECT
+          campaign.id,
+          campaign.name,
+          campaign.status,
           campaign.advertising_channel_type,
-          metrics.impressions, 
-          metrics.clicks, 
-          metrics.cost_micros, 
-          metrics.conversions 
+          metrics.impressions,
+          metrics.clicks,
+          metrics.cost_micros,
+          metrics.conversions
         FROM campaign
+        ${period.where ? `WHERE ${period.where}` : ""}
       `;
       const results = await queryGoogleAds(query);
-      
-      const formatted = results.map(row => {
-        const cost = (parseInt(row.metrics?.costMicros || 0) / 1000000).toLocaleString("es-CL", { style: "currency", currency: "CLP" });
-        return {
-          name: row.campaign.name,
-          id: row.campaign.id,
-          status: row.campaign.status,
-          channel: row.campaign.advertisingChannelType,
-          impressions: row.metrics?.impressions || 0,
-          clicks: row.metrics?.clicks || 0,
-          cost,
-          conversions: row.metrics?.conversions || 0
-        };
-      });
+
+      const formatted = results.map(row => ({
+        name: row.campaign.name,
+        id: row.campaign.id,
+        status: row.campaign.status,
+        channel: row.campaign.advertisingChannelType,
+        impressions: row.metrics?.impressions || 0,
+        clicks: row.metrics?.clicks || 0,
+        ...costFromMicros(row.metrics?.costMicros),
+        conversions: row.metrics?.conversions || 0
+      }));
 
       return {
-        content: [{ type: "text", text: JSON.stringify(formatted, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify({ period: period.label, campaigns: formatted }, null, 2) }],
       };
     }
-    
+
     if (name === "get_keyword_report") {
+      const period = buildPeriod(args);
       const query = `
-        SELECT 
+        SELECT
           ad_group.name,
           ad_group_criterion.criterion_id,
           ad_group_criterion.keyword.text,
@@ -308,25 +367,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           metrics.clicks,
           metrics.cost_micros
         FROM keyword_view
+        ${period.where ? `WHERE ${period.where}` : ""}
       `;
       const results = await queryGoogleAds(query);
-      
-      const formatted = results.map(row => {
-        const cost = (parseInt(row.metrics?.costMicros || 0) / 1000000).toLocaleString("es-CL", { style: "currency", currency: "CLP" });
-        return {
-          adGroup: row.adGroup.name,
-          keywordId: row.adGroupCriterion.criterionId,
-          text: row.adGroupCriterion.keyword.text,
-          matchType: row.adGroupCriterion.keyword.matchType,
-          status: row.adGroupCriterion.status,
-          impressions: row.metrics?.impressions || 0,
-          clicks: row.metrics?.clicks || 0,
-          cost
-        };
-      });
+
+      const formatted = results.map(row => ({
+        adGroup: row.adGroup.name,
+        keywordId: row.adGroupCriterion.criterionId,
+        text: row.adGroupCriterion.keyword.text,
+        matchType: row.adGroupCriterion.keyword.matchType,
+        status: row.adGroupCriterion.status,
+        impressions: row.metrics?.impressions || 0,
+        clicks: row.metrics?.clicks || 0,
+        ...costFromMicros(row.metrics?.costMicros)
+      }));
 
       return {
-        content: [{ type: "text", text: JSON.stringify(formatted, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify({ period: period.label, keywords: formatted }, null, 2) }],
       };
     }
 
@@ -348,7 +405,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const amountMicros = Math.round(newBudgetAmountCLP * 1000000);
       
       // 3. Mutate campaign budget
-      const response = await fetch(`https://googleads.googleapis.com/v21/${budgetResourceName}:mutate`, {
+      const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/${budgetResourceName}:mutate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
