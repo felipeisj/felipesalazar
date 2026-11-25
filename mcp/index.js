@@ -5,8 +5,10 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import fs from "fs";
+import { AsyncLocalStorage } from "node:async_hooks";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createCrmBridge, CRM_TENANT_PROP } from "../mcp-shared/crm-bridge.mjs";
 
 // Load environment variables manually for ESM module simplicity
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,6 +33,29 @@ const DEVELOPER_TOKEN = env.GOOGLE_ADS_DEVELOPER_TOKEN;
 const CLIENT_CUSTOMER_ID = env.GOOGLE_ADS_CLIENT_CUSTOMER_ID;
 const MANAGER_CUSTOMER_ID = env.GOOGLE_ADS_MANAGER_CUSTOMER_ID;
 
+// Modo "empresa del CRM": con `crm_tenant`, las llamadas van por el puente de
+// crm-leads con la autorización de ESA empresa (no con el token de este .env).
+const crm = createCrmBridge({ url: env.CRM_URL, keys: env.CRM_ADS_KEYS });
+const requestCtx = new AsyncLocalStorage();
+const currentTenant = () => requestCtx.getStore()?.tenant ?? null;
+
+// Cuenta por llamada: `customer_id` (y `login_customer_id` si se entra por una
+// cuenta administradora). Sin él, la del .env (GOOGLE_ADS_CLIENT_CUSTOMER_ID).
+const cleanId = (id) => String(id || "").replace(/-/g, "");
+const formatId = (id) => {
+  const c = cleanId(id);
+  return c.length === 10 ? `${c.slice(0, 3)}-${c.slice(3, 6)}-${c.slice(6)}` : c;
+};
+
+/** Customer ID sobre el que se opera: el de la empresa del CRM, el pedido o el del .env. */
+async function customerId() {
+  const tenant = currentTenant();
+  if (!tenant) return requestCtx.getStore()?.customer || cleanId(CLIENT_CUSTOMER_ID);
+  const g = (await crm.connection(tenant)).google;
+  if (!g?.customerId) throw new Error(`La empresa "${tenant}" no tiene Google Ads conectado en el CRM.`);
+  return g.customerId.replace(/-/g, "");
+}
+
 // Helper to get Google Ads Access Token using OAuth2 Refresh Token
 async function getAccessToken() {
   const response = await fetch("https://oauth2.googleapis.com/token", {
@@ -54,16 +79,63 @@ async function getAccessToken() {
 // answers 404 on every call. Bump this when that happens (v21 died before 2026-11-08).
 const API_VERSION = "v26";
 
+function apiHeaders(accessToken, login = requestCtx.getStore()?.login) {
+  const headers = {
+    "Content-Type": "application/json",
+    "developer-token": DEVELOPER_TOKEN,
+    "Authorization": `Bearer ${accessToken}`,
+  };
+  if (login) headers["login-customer-id"] = cleanId(login);
+  return headers;
+}
+
+/** Cuentas a las que llega tu usuario de Google (directas + clientes de tus cuentas administradoras). */
+async function listAccessibleAccounts() {
+  const accessToken = await getAccessToken();
+  const res = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers:listAccessibleCustomers`, {
+    headers: apiHeaders(accessToken, null),
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(`Google Ads API Error: ${data.error.message}`);
+  const ids = (data.resourceNames || []).map((r) => r.replace("customers/", ""));
+  const out = new Map();
+  const search = async (cid, login, query) => {
+    const r = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${cid}/googleAds:search`, {
+      method: "POST",
+      headers: apiHeaders(accessToken, login),
+      body: JSON.stringify({ query }),
+    });
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+    return d.results || [];
+  };
+  for (const id of ids) {
+    try {
+      const [row] = await search(id, id, "SELECT customer.id, customer.descriptive_name, customer.currency_code, customer.manager, customer.test_account FROM customer LIMIT 1");
+      const c = row?.customer || {};
+      out.set(id, { customer_id: formatId(id), name: c.descriptiveName || null, currency: c.currencyCode || null, manager: Boolean(c.manager), test: Boolean(c.testAccount), login_customer_id: null });
+      if (!c.manager) continue;
+      const clients = await search(id, id, "SELECT customer_client.id, customer_client.descriptive_name, customer_client.currency_code, customer_client.manager FROM customer_client WHERE customer_client.level = 1 AND customer_client.status = 'ENABLED'");
+      for (const r of clients) {
+        const cc = r.customerClient || {};
+        if (!cc.id || cc.manager || out.has(cc.id)) continue;
+        out.set(cc.id, { customer_id: formatId(cc.id), name: cc.descriptiveName || null, currency: cc.currencyCode || null, manager: false, test: false, login_customer_id: formatId(id) });
+      }
+    } catch (err) {
+      out.set(id, { customer_id: formatId(id), error: err.message });
+    }
+  }
+  return [...out.values()].map((a) => ({ ...a, default: cleanId(a.customer_id) === cleanId(CLIENT_CUSTOMER_ID) }));
+}
+
 // Helper to query the Google Ads REST API
 async function queryGoogleAds(query) {
+  const tenant = currentTenant();
+  if (tenant) return (await crm.googleSearch(tenant, query)).results || [];
   const accessToken = await getAccessToken();
-  const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${CLIENT_CUSTOMER_ID}/googleAds:search`, {
+  const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${await customerId()}/googleAds:search`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "developer-token": DEVELOPER_TOKEN,
-      "Authorization": `Bearer ${accessToken}`,
-    },
+    headers: apiHeaders(accessToken),
     body: JSON.stringify({ query }),
   });
   
@@ -85,14 +157,12 @@ async function queryGoogleAds(query) {
 // Generic helper for collection-level mutate calls (creates and updates),
 // e.g. resourcePath "campaigns", "adGroups", "adGroupCriteria", "adGroupAds".
 async function mutateGoogleAds(resourcePath, operations) {
+  const tenant = currentTenant();
+  if (tenant) return (await crm.googleMutate(tenant, resourcePath, operations)).results || [];
   const accessToken = await getAccessToken();
-  const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${CLIENT_CUSTOMER_ID}/${resourcePath}:mutate`, {
+  const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${await customerId()}/${resourcePath}:mutate`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "developer-token": DEVELOPER_TOKEN,
-      "Authorization": `Bearer ${accessToken}`,
-    },
+    headers: apiHeaders(accessToken),
     body: JSON.stringify({ operations }),
   });
 
@@ -311,6 +381,30 @@ const TOOLS = [
   },
 ];
 
+// Toda tool acepta la cuenta a operar (`customer_id`) o una empresa del CRM (`crm_tenant`).
+const CUSTOMER_ID_PROP = {
+  type: "string",
+  description: "Cuenta de Google Ads a operar (ej. 123-456-7890). Sin él: la cuenta por defecto del .env. Usa list_accessible_accounts para ver las disponibles y confirmar la del cliente antes de escribir.",
+};
+const LOGIN_CUSTOMER_ID_PROP = {
+  type: "string",
+  description: "Solo si la cuenta se administra a través de una cuenta administradora (MCC): su ID (lo indica list_accessible_accounts).",
+};
+for (const tool of TOOLS) {
+  tool.inputSchema.properties = {
+    ...(tool.inputSchema.properties || {}),
+    customer_id: CUSTOMER_ID_PROP,
+    login_customer_id: LOGIN_CUSTOMER_ID_PROP,
+    crm_tenant: CRM_TENANT_PROP,
+  };
+}
+TOOLS.unshift({
+  name: "list_accessible_accounts",
+  description: "Lista las cuentas de Google Ads a las que llega tu usuario (nombre, ID, moneda, si es administradora, cuál es la por defecto y el login_customer_id si se entra por un MCC). Usar antes de operar la cuenta de un cliente. Solo lectura.",
+  inputSchema: { type: "object", properties: {} },
+});
+
+
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: TOOLS,
@@ -318,6 +412,39 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const tenant = request.params.arguments?.crm_tenant || null;
+  if (tenant && !crm.has(tenant)) {
+    return {
+      isError: true,
+      content: [{ type: "text", text: `No hay API key del CRM para "${tenant}" (CRM_ADS_KEYS). Configuradas: ${crm.tenants().join(", ") || "ninguna"}.` }],
+    };
+  }
+  const args = request.params.arguments || {};
+  if (request.params.name === "list_accessible_accounts") {
+    try {
+      return { content: [{ type: "text", text: JSON.stringify(await listAccessibleAccounts(), null, 2) }] };
+    } catch (err) {
+      return { isError: true, content: [{ type: "text", text: err.message }] };
+    }
+  }
+  const customer = args.customer_id ? cleanId(args.customer_id) : null;
+  if (customer && !/^\d{10}$/.test(customer)) {
+    return { isError: true, content: [{ type: "text", text: "customer_id inválido: se esperan 10 dígitos (ej. 123-456-7890)." }] };
+  }
+  if (tenant && customer) {
+    return { isError: true, content: [{ type: "text", text: "Usa customer_id o crm_tenant, no ambos." }] };
+  }
+  const login = args.login_customer_id ? cleanId(args.login_customer_id) : null;
+  const result = await requestCtx.run({ tenant, customer, login }, () => handleTool(request));
+  // Toda respuesta dice sobre qué cuenta se operó (evita escribir en la equivocada).
+  if (!result.isError) {
+    const label = tenant ? `empresa del CRM "${tenant}"` : formatId(customer || CLIENT_CUSTOMER_ID);
+    result.content = [...(result.content || []), { type: "text", text: `Cuenta: ${label}` }];
+  }
+  return result;
+});
+
+async function handleTool(request) {
   const { name, arguments: args } = request.params;
   
   try {
@@ -389,8 +516,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     if (name === "mutate_campaign_budget") {
       const { campaignId, newBudgetAmountCLP } = args;
-      const accessToken = await getAccessToken();
-      
       // 1. First retrieve the specific campaign budget resource name associated with the campaign
       const campaignQuery = `SELECT campaign.id, campaign.name, campaign.campaign_budget FROM campaign WHERE campaign.id = '${campaignId}'`;
       const campaignInfo = await queryGoogleAds(campaignQuery);
@@ -404,34 +529,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       // 2. Convert CLP budget to micros (CLP amount * 1,000,000)
       const amountMicros = Math.round(newBudgetAmountCLP * 1000000);
       
-      // 3. Mutate campaign budget
-      const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/${budgetResourceName}:mutate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "developer-token": DEVELOPER_TOKEN,
-          "Authorization": `Bearer ${accessToken}`,
+      // 3. Mutate campaign budget (endpoint de colección; por el puente si hay crm_tenant)
+      await mutateGoogleAds("campaignBudgets", [
+        {
+          update: { resourceName: budgetResourceName, amountMicros: amountMicros.toString() },
+          updateMask: "amount_micros",
         },
-        body: JSON.stringify({
-          operations: [
-            {
-              update: {
-                resourceName: budgetResourceName,
-                amountMicros: amountMicros.toString()
-              },
-              updateMask: "amountMicros"
-            }
-          ]
-        }),
-      });
+      ]);
 
-      const text = await response.text();
-      let mutateData = JSON.parse(text);
-      
-      if (mutateData.error) {
-        throw new Error(`Budget Mutate Error: ${JSON.stringify(mutateData.error, null, 2)}`);
-      }
-      
       return {
         content: [{ type: "text", text: `Successfully updated campaign daily budget to ${newBudgetAmountCLP.toLocaleString("es-CL", { style: "currency", currency: "CLP" })} (Resource: ${budgetResourceName})` }],
       };
@@ -485,7 +590,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { campaignId, adGroupName, cpcBidCLP } = args;
       const create = {
         name: adGroupName,
-        campaign: `customers/${CLIENT_CUSTOMER_ID}/campaigns/${campaignId}`,
+        campaign: `customers/${await customerId()}/campaigns/${campaignId}`,
         status: "ENABLED",
         type: "SEARCH_STANDARD",
       };
@@ -507,10 +612,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "add_keywords" || name === "add_negative_keywords") {
       const { adGroupId, keywords } = args;
       const negative = name === "add_negative_keywords";
+      const cid = await customerId();
 
       const operations = keywords.map((kw) => ({
         create: {
-          adGroup: `customers/${CLIENT_CUSTOMER_ID}/adGroups/${adGroupId}`,
+          adGroup: `customers/${cid}/adGroups/${adGroupId}`,
           status: "ENABLED",
           negative,
           keyword: {
@@ -551,7 +657,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const results = await mutateGoogleAds("adGroupAds", [
         {
           create: {
-            adGroup: `customers/${CLIENT_CUSTOMER_ID}/adGroups/${adGroupId}`,
+            adGroup: `customers/${await customerId()}/adGroups/${adGroupId}`,
             status: "ENABLED",
             ad: {
               finalUrls: [finalUrl],
@@ -577,7 +683,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const results = await mutateGoogleAds("campaigns", [
         {
           update: {
-            resourceName: `customers/${CLIENT_CUSTOMER_ID}/campaigns/${campaignId}`,
+            resourceName: `customers/${await customerId()}/campaigns/${campaignId}`,
             status: "PAUSED",
           },
           updateMask: "status",
@@ -596,7 +702,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       content: [{ type: "text", text: error.message }],
     };
   }
-});
+}
 
 // Run server using stdio transport
 const transport = new StdioServerTransport();

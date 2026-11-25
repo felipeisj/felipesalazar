@@ -5,8 +5,10 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import fs from "fs";
+import { AsyncLocalStorage } from "node:async_hooks";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createCrmBridge, CRM_TENANT_PROP } from "../mcp-shared/crm-bridge.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.join(__dirname, ".env");
@@ -23,6 +25,8 @@ const ENV_KEYS = [
   "META_APP_ID",
   "META_APP_SECRET",
   "WA_TEST_PHONE_NUMBER_ID",
+  "CRM_URL",
+  "CRM_ADS_KEYS",
 ];
 const cfg = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k] || ""]));
 
@@ -48,6 +52,14 @@ const META_APP_ID = cfg.META_APP_ID || "1357627829882329";
 const META_APP_SECRET = cfg.META_APP_SECRET;
 // Único número al que wa_send_test_message puede enviar (Test WABA, +1 555-670-0751).
 const WA_TEST_PHONE_NUMBER_ID = cfg.WA_TEST_PHONE_NUMBER_ID || "1229761910231504";
+
+// Modo "empresa del CRM": con `crm_tenant`, las tools de anuncios operan la
+// cuenta conectada por ESA empresa en crm-leads, por su puente (/api/v1/ads),
+// sin usar META_ACCESS_TOKEN. El CRM aplica las reglas: solo su cuenta, la
+// campaña nace PAUSED y activarla se hace a mano (Campañas del CRM / Ads Manager).
+const crm = createCrmBridge({ url: cfg.CRM_URL, keys: cfg.CRM_ADS_KEYS });
+const requestCtx = new AsyncLocalStorage();
+const currentTenant = () => requestCtx.getStore()?.tenant ?? null;
 
 // Clean Ad Account ID to format act_XXXXXXXXX
 function formatAdAccountId(id) {
@@ -244,6 +256,11 @@ class GraphError extends Error {}
 
 // Request genérico a la Graph API con token en header (no en la URL) y body JSON.
 async function graphRequest(method, path, { query, body, token } = {}) {
+  const tenant = currentTenant();
+  if (tenant) {
+    if (token) throw new GraphError("Esta tool no está disponible para empresas del CRM (usa un token de página propio).");
+    return crm.meta(tenant, { method, path, query, params: body });
+  }
   const url = new URL(`${GRAPH}/${path}`);
   for (const [k, v] of Object.entries(query || {})) {
     if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
@@ -617,7 +634,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "meta_create_ad_set",
-        description: "Crea un ad set (conjunto de anuncios) bajo una campaña existente, con presupuesto diario y segmentación. SEGURIDAD: nace SIEMPRE en status PAUSED, aunque la campaña padre esté activa.",
+        description: "Crea un ad set (conjunto de anuncios) bajo una campaña existente, con presupuesto diario y segmentación. SEGURIDAD: con tu token nace SIEMPRE PAUSED; con crm_tenant nace listo solo si la campaña está pausada (así «Activar» en el CRM lanza todo). Para clic a WhatsApp: destination_type WHATSAPP, optimization_goal CONVERSATIONS y promoted_object_page_id.",
         inputSchema: {
           type: "object",
           properties: {
@@ -630,13 +647,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             countries: { type: "array", items: { type: "string" }, description: "Códigos de país ISO para segmentar (default ['CL'])." },
             age_min: { type: "number", description: "Edad mínima (default 18)" },
             age_max: { type: "number", description: "Edad máxima (default 65)" },
+            geo_locations: {
+              type: "object",
+              description: "Segmentación geográfica completa de Meta (reemplaza countries), ej. {\"cities\":[{\"key\":\"…\",\"radius\":40,\"distance_unit\":\"kilometer\"}]} o {\"regions\":[{\"key\":\"…\"}]}. Las keys salen de la Graph API search?type=adgeolocation.",
+            },
+            destination_type: { type: "string", description: "Destino de la conversión, ej. WHATSAPP (clic a WhatsApp), WEBSITE, ON_AD. Opcional." },
+            promoted_object_page_id: { type: "string", description: "Página de Facebook a promover (requerida para clic a WhatsApp / mensajes). Opcional." },
           },
           required: ["ad_account_id", "name", "campaign_id", "daily_budget_clp"],
         },
       },
       {
         name: "meta_create_ad_creative",
-        description: "Crea un creative (mensaje + imagen + link) reutilizable para armar un anuncio. No gasta plata por sí solo — solo existe cuando se usa en meta_create_ad.",
+        description: "Crea un creative (mensaje + imagen + link) reutilizable para armar un anuncio. No gasta plata por sí solo — solo existe cuando se usa en meta_create_ad. Para clic a WhatsApp: call_to_action_type WHATSAPP_MESSAGE (el link es opcional; la página debe tener el número de WhatsApp vinculado).",
         inputSchema: {
           type: "object",
           properties: {
@@ -644,16 +667,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             name: { type: "string", description: "Nombre interno del creative" },
             page_id: { type: "string", description: "ID de la página de Facebook/Instagram conectada a la cuenta publicitaria" },
             message: { type: "string", description: "Texto principal del anuncio" },
-            link: { type: "string", description: "URL de destino (landing page)" },
+            link: { type: "string", description: "URL de destino (landing page). Opcional con WHATSAPP_MESSAGE." },
             picture_url: { type: "string", description: "URL pública de la imagen a usar (opcional)" },
-            call_to_action_type: { type: "string", description: "Ej: LEARN_MORE, CONTACT_US, SIGN_UP. Default LEARN_MORE." },
+            call_to_action_type: { type: "string", description: "Ej: LEARN_MORE, CONTACT_US, SIGN_UP, WHATSAPP_MESSAGE. Default LEARN_MORE." },
           },
-          required: ["ad_account_id", "name", "page_id", "message", "link"],
+          required: ["ad_account_id", "name", "page_id", "message"],
         },
       },
       {
         name: "meta_create_ad",
-        description: "Crea un anuncio dentro de un ad set, usando un creative ya existente. SEGURIDAD: nace SIEMPRE en status PAUSED.",
+        description: "Crea un anuncio dentro de un ad set, usando un creative ya existente. SEGURIDAD: con tu token nace SIEMPRE PAUSED; con crm_tenant nace listo solo si la campaña está pausada.",
         inputSchema: {
           type: "object",
           properties: {
@@ -688,14 +711,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["adset_id", "new_daily_budget_clp"],
         },
       },
+      {
+        name: "crm_list_tenants",
+        description: "Empresas del CRM (crm-leads) que este MCP puede operar con crm_tenant, con sus cuentas de Meta/Google Ads conectadas. Solo lectura.",
+        inputSchema: { type: "object", properties: {} },
+      },
+      {
+        name: "crm_campaign_report",
+        description: "Reporte de campañas de una empresa del CRM (Google + Meta) con sus leads REALES del CRM y costo por lead. Solo lectura.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            crm_tenant: CRM_TENANT_PROP,
+            range: { type: "string", enum: ["last_7", "last_30", "last_90", "this_month"], description: "Período (default last_30)" },
+          },
+          required: ["crm_tenant"],
+        },
+      },
       ...WA_TOOLS,
-    ],
+    ].map((tool) =>
+      // Las tools de anuncios aceptan crm_tenant; con él, ad_account_id sale del CRM.
+      tool.name.startsWith("meta_")
+        ? {
+            ...tool,
+            inputSchema: {
+              ...tool.inputSchema,
+              properties: { ...tool.inputSchema.properties, crm_tenant: CRM_TENANT_PROP },
+              required: (tool.inputSchema.required || []).filter((r) => r !== "ad_account_id"),
+            },
+          }
+        : tool
+    ),
   };
 });
 
 // Generic POST helper for Graph API writes — nested objects are JSON-encoded per field,
 // matching how the Graph API expects form-encoded params.
 async function graphPost(path, params) {
+  const tenant = currentTenant();
+  if (tenant) return crm.meta(tenant, { method: "POST", path, params });
   const body = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null) continue;
@@ -715,10 +769,56 @@ async function graphPost(path, params) {
 }
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const tenant = request.params.arguments?.crm_tenant || null;
+  if (tenant && !crm.has(tenant)) {
+    return {
+      content: [{ type: "text", text: `⚠️ No hay API key del CRM para "${tenant}" (CRM_ADS_KEYS en mcp-meta/.env). Configuradas: ${crm.tenants().join(", ") || "ninguna"}.` }],
+      isError: true,
+    };
+  }
+  return requestCtx.run({ tenant }, () => handleTool(request));
+});
+
+async function handleTool(request) {
   const { name, arguments: args } = request.params;
-  const accountId = formatAdAccountId(args?.ad_account_id);
+  const tenant = currentTenant();
+
+  if (name === "crm_list_tenants") {
+    const rows = [];
+    for (const t of crm.tenants()) {
+      try {
+        rows.push(await crm.connection(t));
+      } catch (err) {
+        rows.push({ tenant: t, error: err.message });
+      }
+    }
+    return json(rows);
+  }
+  if (name === "crm_campaign_report") {
+    if (!tenant) return { content: [{ type: "text", text: "⚠️ Falta crm_tenant." }], isError: true };
+    try {
+      return json(await crm.report(tenant, args?.range));
+    } catch (err) {
+      return { content: [{ type: "text", text: `❌ ${err.message}` }], isError: true };
+    }
+  }
+
+  let accountId = formatAdAccountId(args?.ad_account_id);
+  if (tenant && name.startsWith("meta_")) {
+    try {
+      const conn = await crm.connection(tenant);
+      if (!conn.meta?.adAccountId) throw new Error(`La empresa "${tenant}" no tiene Meta Ads conectado en el CRM.`);
+      accountId = conn.meta.adAccountId;
+      if (name === "meta_list_ad_accounts") return json([{ ...conn.meta, tenant }]);
+    } catch (err) {
+      return { content: [{ type: "text", text: `❌ ${err.message}` }], isError: true };
+    }
+  }
 
   if (name.startsWith("wa_")) {
+    if (tenant) {
+      return { content: [{ type: "text", text: "⚠️ Las tools wa_* no usan crm_tenant." }], isError: true };
+    }
     if (!META_ACCESS_TOKEN) {
       return { content: [{ type: "text", text: "⚠️ Falta META_ACCESS_TOKEN en mcp-meta/.env" }], isError: true };
     }
@@ -731,7 +831,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
   }
 
-  if (!META_ACCESS_TOKEN) {
+  if (!META_ACCESS_TOKEN && !tenant) {
     return { content: [{ type: "text", text: "⚠️ Falta META_ACCESS_TOKEN en mcp-meta/.env" }], isError: true };
   }
   if (AD_ACCOUNT_TOOLS.has(name) && !/^act_\d{5,25}$/.test(accountId)) {
@@ -807,7 +907,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [{
           type: "text",
-          text: `Campaña "${campaignName}" creada (id ${data.id}, objetivo ${resolvedObjective}).\nEstado: PAUSED — no va a gastar hasta que la actives manualmente en Meta Ads Manager.`,
+          text: `Campaña "${campaignName}" creada (id ${data.id}, objetivo ${resolvedObjective}).\nEstado: PAUSED — no va a gastar hasta que la actives manualmente${tenant ? " (Campañas del CRM o Ads Manager)" : " en Meta Ads Manager"}.`,
         }],
       };
     }
@@ -822,6 +922,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         countries,
         age_min,
         age_max,
+        geo_locations,
+        destination_type,
+        promoted_object_page_id,
       } = args;
 
       const data = await graphPost(`${accountId}/adsets`, {
@@ -832,17 +935,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         optimization_goal: optimization_goal || "LEAD_GENERATION",
         bid_strategy: "LOWEST_COST_WITHOUT_CAP",
         targeting: {
-          geo_locations: { countries: countries || ["CL"] },
+          geo_locations: geo_locations || { countries: countries || ["CL"] },
           age_min: age_min || 18,
           age_max: age_max || 65,
         },
-        status: "PAUSED", // SEGURIDAD: nace pausado aunque la campaña padre esté activa
+        destination_type,
+        promoted_object: promoted_object_page_id ? { page_id: promoted_object_page_id } : undefined,
+        // SEGURIDAD: con tu token nace pausado. Con crm_tenant decide el CRM
+        // (listo solo si la campaña padre está pausada).
+        status: tenant ? undefined : "PAUSED",
       });
 
       return {
         content: [{
           type: "text",
-          text: `Ad set "${adSetName}" creado (id ${data.id}) bajo campaña ${campaign_id}, presupuesto diario $${daily_budget_clp.toLocaleString("es-CL")} CLP.\nEstado: PAUSED.`,
+          text: `Ad set "${adSetName}" creado (id ${data.id}) bajo campaña ${campaign_id}, presupuesto diario $${daily_budget_clp.toLocaleString("es-CL")} CLP.\nEstado: ${tenant ? "lo decide el CRM (listo si la campaña está pausada)" : "PAUSED"}.`,
         }],
       };
     }
@@ -850,10 +957,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "meta_create_ad_creative") {
       const { name: creativeName, page_id, message, link, picture_url, call_to_action_type } = args;
 
+      const whatsapp = call_to_action_type === "WHATSAPP_MESSAGE";
+      const target = link || (whatsapp ? "https://api.whatsapp.com/send" : undefined);
+      if (!target) throw new Error("Falta link (URL de destino).");
       const linkData = {
         message,
-        link,
-        call_to_action: { type: call_to_action_type || "LEARN_MORE", value: { link } },
+        link: target,
+        call_to_action: whatsapp
+          ? { type: "WHATSAPP_MESSAGE", value: { app_destination: "WHATSAPP" } }
+          : { type: call_to_action_type || "LEARN_MORE", value: { link: target } },
       };
       if (picture_url) linkData.picture = picture_url;
 
@@ -874,13 +986,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         name: adName,
         adset_id,
         creative: { creative_id },
-        status: "PAUSED", // SEGURIDAD: no es parametrizable, nunca nace activo
+        status: tenant ? undefined : "PAUSED", // SEGURIDAD: con crm_tenant decide el CRM
       });
 
       return {
         content: [{
           type: "text",
-          text: `Anuncio "${adName}" creado (id ${data.id}) en ad set ${adset_id}.\nEstado: PAUSED — revisalo y activalo manualmente en Meta Ads Manager cuando esté listo.`,
+          text: `Anuncio "${adName}" creado (id ${data.id}) en ad set ${adset_id}.\n${tenant ? "Estado: lo decide el CRM (listo si la campaña está pausada). Para lanzar, activa la campaña en Campañas del CRM." : "Estado: PAUSED — revisalo y activalo manualmente en Meta Ads Manager cuando esté listo."}`,
         }],
       };
     }
@@ -915,7 +1027,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       isError: true,
     };
   }
-});
+}
 
 async function main() {
   const transport = new StdioServerTransport();
