@@ -5,8 +5,10 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import fs from "fs";
+import { AsyncLocalStorage } from "node:async_hooks";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createCrmBridge, CRM_TENANT_PROP } from "../mcp-shared/crm-bridge.mjs";
 
 // Load environment variables manually for ESM module simplicity
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,6 +32,21 @@ const REFRESH_TOKEN = env.GOOGLE_ADS_REFRESH_TOKEN;
 const DEVELOPER_TOKEN = env.GOOGLE_ADS_DEVELOPER_TOKEN;
 const CLIENT_CUSTOMER_ID = env.GOOGLE_ADS_CLIENT_CUSTOMER_ID;
 const MANAGER_CUSTOMER_ID = env.GOOGLE_ADS_MANAGER_CUSTOMER_ID;
+
+// Modo "empresa del CRM": con `crm_tenant`, las llamadas van por el puente de
+// crm-leads con la autorización de ESA empresa (no con el token de este .env).
+const crm = createCrmBridge({ url: env.CRM_URL, keys: env.CRM_ADS_KEYS });
+const requestCtx = new AsyncLocalStorage();
+const currentTenant = () => requestCtx.getStore()?.tenant ?? null;
+
+/** Customer ID sobre el que se opera: el de la empresa del CRM o el del .env. */
+async function customerId() {
+  const tenant = currentTenant();
+  if (!tenant) return CLIENT_CUSTOMER_ID;
+  const g = (await crm.connection(tenant)).google;
+  if (!g?.customerId) throw new Error(`La empresa "${tenant}" no tiene Google Ads conectado en el CRM.`);
+  return g.customerId.replace(/-/g, "");
+}
 
 // Helper to get Google Ads Access Token using OAuth2 Refresh Token
 async function getAccessToken() {
@@ -56,6 +73,8 @@ const API_VERSION = "v26";
 
 // Helper to query the Google Ads REST API
 async function queryGoogleAds(query) {
+  const tenant = currentTenant();
+  if (tenant) return (await crm.googleSearch(tenant, query)).results || [];
   const accessToken = await getAccessToken();
   const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${CLIENT_CUSTOMER_ID}/googleAds:search`, {
     method: "POST",
@@ -85,6 +104,8 @@ async function queryGoogleAds(query) {
 // Generic helper for collection-level mutate calls (creates and updates),
 // e.g. resourcePath "campaigns", "adGroups", "adGroupCriteria", "adGroupAds".
 async function mutateGoogleAds(resourcePath, operations) {
+  const tenant = currentTenant();
+  if (tenant) return (await crm.googleMutate(tenant, resourcePath, operations)).results || [];
   const accessToken = await getAccessToken();
   const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/customers/${CLIENT_CUSTOMER_ID}/${resourcePath}:mutate`, {
     method: "POST",
@@ -311,6 +332,12 @@ const TOOLS = [
   },
 ];
 
+// Toda tool acepta `crm_tenant` para operar la cuenta de una empresa del CRM.
+for (const tool of TOOLS) {
+  tool.inputSchema.properties = { ...(tool.inputSchema.properties || {}), crm_tenant: CRM_TENANT_PROP };
+}
+
+
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: TOOLS,
@@ -318,6 +345,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const tenant = request.params.arguments?.crm_tenant || null;
+  if (tenant && !crm.has(tenant)) {
+    return {
+      isError: true,
+      content: [{ type: "text", text: `No hay API key del CRM para "${tenant}" (CRM_ADS_KEYS). Configuradas: ${crm.tenants().join(", ") || "ninguna"}.` }],
+    };
+  }
+  return requestCtx.run({ tenant }, () => handleTool(request));
+});
+
+async function handleTool(request) {
   const { name, arguments: args } = request.params;
   
   try {
@@ -389,8 +427,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     if (name === "mutate_campaign_budget") {
       const { campaignId, newBudgetAmountCLP } = args;
-      const accessToken = await getAccessToken();
-      
       // 1. First retrieve the specific campaign budget resource name associated with the campaign
       const campaignQuery = `SELECT campaign.id, campaign.name, campaign.campaign_budget FROM campaign WHERE campaign.id = '${campaignId}'`;
       const campaignInfo = await queryGoogleAds(campaignQuery);
@@ -404,34 +440,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       // 2. Convert CLP budget to micros (CLP amount * 1,000,000)
       const amountMicros = Math.round(newBudgetAmountCLP * 1000000);
       
-      // 3. Mutate campaign budget
-      const response = await fetch(`https://googleads.googleapis.com/${API_VERSION}/${budgetResourceName}:mutate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "developer-token": DEVELOPER_TOKEN,
-          "Authorization": `Bearer ${accessToken}`,
+      // 3. Mutate campaign budget (endpoint de colección; por el puente si hay crm_tenant)
+      await mutateGoogleAds("campaignBudgets", [
+        {
+          update: { resourceName: budgetResourceName, amountMicros: amountMicros.toString() },
+          updateMask: "amount_micros",
         },
-        body: JSON.stringify({
-          operations: [
-            {
-              update: {
-                resourceName: budgetResourceName,
-                amountMicros: amountMicros.toString()
-              },
-              updateMask: "amountMicros"
-            }
-          ]
-        }),
-      });
+      ]);
 
-      const text = await response.text();
-      let mutateData = JSON.parse(text);
-      
-      if (mutateData.error) {
-        throw new Error(`Budget Mutate Error: ${JSON.stringify(mutateData.error, null, 2)}`);
-      }
-      
       return {
         content: [{ type: "text", text: `Successfully updated campaign daily budget to ${newBudgetAmountCLP.toLocaleString("es-CL", { style: "currency", currency: "CLP" })} (Resource: ${budgetResourceName})` }],
       };
@@ -485,7 +501,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { campaignId, adGroupName, cpcBidCLP } = args;
       const create = {
         name: adGroupName,
-        campaign: `customers/${CLIENT_CUSTOMER_ID}/campaigns/${campaignId}`,
+        campaign: `customers/${await customerId()}/campaigns/${campaignId}`,
         status: "ENABLED",
         type: "SEARCH_STANDARD",
       };
@@ -507,10 +523,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "add_keywords" || name === "add_negative_keywords") {
       const { adGroupId, keywords } = args;
       const negative = name === "add_negative_keywords";
+      const cid = await customerId();
 
       const operations = keywords.map((kw) => ({
         create: {
-          adGroup: `customers/${CLIENT_CUSTOMER_ID}/adGroups/${adGroupId}`,
+          adGroup: `customers/${cid}/adGroups/${adGroupId}`,
           status: "ENABLED",
           negative,
           keyword: {
@@ -551,7 +568,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const results = await mutateGoogleAds("adGroupAds", [
         {
           create: {
-            adGroup: `customers/${CLIENT_CUSTOMER_ID}/adGroups/${adGroupId}`,
+            adGroup: `customers/${await customerId()}/adGroups/${adGroupId}`,
             status: "ENABLED",
             ad: {
               finalUrls: [finalUrl],
@@ -577,7 +594,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const results = await mutateGoogleAds("campaigns", [
         {
           update: {
-            resourceName: `customers/${CLIENT_CUSTOMER_ID}/campaigns/${campaignId}`,
+            resourceName: `customers/${await customerId()}/campaigns/${campaignId}`,
             status: "PAUSED",
           },
           updateMask: "status",
@@ -596,7 +613,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       content: [{ type: "text", text: error.message }],
     };
   }
-});
+}
 
 // Run server using stdio transport
 const transport = new StdioServerTransport();
